@@ -3,7 +3,7 @@
 SFMLKernel::SFMLKernel()
 {
     _window = new RenderWindow(sf::VideoMode(WIDTH, HEIGHT), GAME_NAME);
-    _currentModule = new GameController(_window, "Home");
+    _currentModule = new HomeController(_window, this, "Home");
     cout << "-> SFML initialisation : Done." << endl;
 }
 
@@ -12,15 +12,16 @@ void SFMLKernel::loadModule(Controller::Module module)
     Controller *tmp;
 
     tmp = _currentModule;
-
+    std::cout << "test" << endl;
     switch (module)
     {
         case Controller::Home:
-            _currentModule = new HomeController(_window, "Home");
+            _currentModule = new HomeController(_window, this, "Home");
             break;
 
         case Controller::Game:
-            _currentModule = new GameController(_window, "Game");
+            cout << "Changement vers game" << endl;
+            _currentModule = new GameController(_window, this, "Game");
             break;
     }
     delete(tmp);

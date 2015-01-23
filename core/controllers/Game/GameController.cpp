@@ -1,7 +1,7 @@
 #include "../../../include/Game.hpp"
 
 
-GameController::GameController(RenderWindow *window, const string &name) : Controller(window, name)
+GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : Controller(window, kernel, name)
 {
 }
 

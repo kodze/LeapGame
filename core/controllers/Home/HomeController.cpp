@@ -1,7 +1,7 @@
 #include "../../../include/Home.hpp"
 
 
-HomeController::HomeController(RenderWindow *window, const string &name) : Controller(window, name)
+HomeController::HomeController(RenderWindow *window, SFMLKernel *kernel, const string &name) : Controller(window, kernel, name)
 {
 }
 

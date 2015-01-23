@@ -18,7 +18,7 @@ public:
         Game
     };
 
-    Controller(RenderWindow *window, const string &name);
+    Controller(RenderWindow *window, SFMLKernel *kernel, const string &name);
     virtual ~Controller();
 
     virtual int eventManager(Event event) = 0;

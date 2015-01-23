@@ -10,7 +10,7 @@ using namespace sf;
 class HomeController : public Controller
 {
 public:
-    HomeController(RenderWindow *window, const string &name);
+    HomeController(RenderWindow *window, SFMLKernel *kernel, const string &name);
     virtual ~HomeController();
 
     int eventManager(Event event);

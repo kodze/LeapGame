@@ -2,6 +2,7 @@
 # define __GAME_HPP__
 
 #include "Controller.hpp"
+#include "SFMLKernel.hpp"
 
 using namespace std;
 using namespace sf;
@@ -9,11 +10,12 @@ using namespace sf;
 class GameController : public Controller
 {
 public:
-    GameController(RenderWindow *window, const string &name);
+    GameController(RenderWindow *window, SFMLKernel *kernel, const string &name);
     virtual ~GameController();
 
     int eventManager(Event event);
     int display();
+
 };
 
 #endif

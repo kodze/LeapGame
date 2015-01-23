@@ -8,7 +8,7 @@ SRC		= main.cpp \
 
 OBJ		= $(SRC:.cpp=.o)
 
-CC		= g++ -lsfml-graphics -lsfml-window -lsfml-system -liquidfun
+CC		= g++ -lsfml-graphics -lsfml-window -lsfml-system -lliquidfun
 
 CPPFLAGS	= -I include
 
