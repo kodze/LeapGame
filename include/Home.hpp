@@ -15,6 +15,8 @@ public:
 
     int eventManager(Event event);
     int display();
+private:
+    Texture _backgroundImg;
 };
 
 #endif
