@@ -1,10 +1,14 @@
 NAME		= LeapGame
 
-SRC		= source/main.cpp \
+SRC		= main.cpp \
+          core/kernel/SFMLKernel.cpp \
+          core/controllers/Controller.cpp \
+          core/controllers/Home/HomeController.cpp \
+          core/controllers/Game/GameController.cpp \
 
 OBJ		= $(SRC:.cpp=.o)
 
-CC		= g++
+CC		= g++ -lsfml-graphics -lsfml-window -lsfml-system -liquidfun
 
 CPPFLAGS	= -I include
 
