@@ -1,2 +1,0 @@
-# LeapGame
-Simple leap game
