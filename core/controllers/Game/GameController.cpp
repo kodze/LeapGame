@@ -1,7 +1,7 @@
 #include "../../../include/Game.hpp"
 
 
-GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : Controller(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat")
+GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : Controller(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat"), _rock("rock")
 {
   this->init();
 }
@@ -17,7 +17,7 @@ int GameController::eventManager(Event event)
     {
       if (event.mouseButton.button == sf::Mouse::Left)
 	{
-	  b2Vec2 force(0, 150);
+	  b2Vec2 force(0, -500);
 	  _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
 	}
     }
@@ -67,15 +67,26 @@ int	GameController::display()
   for (b2Body* BodyIterator = _world.GetBodyList(); BodyIterator != 0;
        BodyIterator = BodyIterator->GetNext())
     {
-      if (BodyIterator->GetUserData() != NULL)
+      if (BodyIterator->GetUserData())
 	{
-	  Sprite	box(_box);
-	  
-	  box.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x - 1.5f),
-			  METERTOPIXEL * (BodyIterator->GetPosition().y + 0.3f));
-	  _window->draw(box);
+	  if (*((string *)(BodyIterator->GetUserData())) == string("boat"))
+	    {
+	      Sprite	box(_box);
+	      
+	      box.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x - 1.6f),
+			      METERTOPIXEL * (BodyIterator->GetPosition().y - 0.5f));
+	      _window->draw(box);
+	    }
+	  else
+	    {
+	      Sprite	rock(_box);
+	      
+	      rock.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x - 1.5f),
+			       METERTOPIXEL * (BodyIterator->GetPosition().y - 1.5f));
+	      _window->draw(rock);
+	    }
 	}
-    }  
+    }
   _window->display();
 }
 
@@ -114,7 +125,7 @@ void		GameController::init()
 
   _particleSystemDef.radius = 6/METERTOPIXEL;
   _particleSystem = _world.CreateParticleSystem(&_particleSystemDef);
-
+  
   b2ParticleDef		pd;
   
   pd.lifetime = 0.0f;
@@ -123,7 +134,7 @@ void		GameController::init()
 
   for (int j = 1000; j < HEIGHT; j += 2)
     {
-      for (int i = 0; i <= WIDTH; i += 10)
+      for (int i = 0; i <= WIDTH; i += 5)
 	{
 	  pd.position.Set(i / METERTOPIXEL, j /METERTOPIXEL);
 	  _particleSystem->CreateParticle(pd);
@@ -163,13 +174,6 @@ void		GameController::init()
   rightWallFixDef.shape = &rightWallShape;
   RightWall->CreateFixture(&rightWallFixDef);
 
-  b2Vec2 mVertices[2];
-  mVertices[0].x = 0/METERTOPIXEL;
-  mVertices[1].x = 0/METERTOPIXEL;
-
-  mVertices[0].y = 0/METERTOPIXEL;
-  mVertices[1].y = 100/METERTOPIXEL;
-  
   b2BodyDef CubeDef;
   CubeDef.position = b2Vec2(850/METERTOPIXEL, 0/METERTOPIXEL);
   CubeDef.type = b2_dynamicBody;
@@ -177,10 +181,25 @@ void		GameController::init()
   CubeDef.fixedRotation = true;
   b2Body* Cube = _world.CreateBody(&CubeDef);
   b2PolygonShape CubeShape;
-  CubeShape.Set(mVertices, 2);
+  CubeShape.SetAsBox(70/METERTOPIXEL, 10/METERTOPIXEL);
   b2FixtureDef CubeFixDef;
   CubeFixDef.density = 0.f;
-  CubeFixDef.friction = 0.7f;
+  CubeFixDef.friction = 0.f;
+  CubeFixDef.shape = &CubeShape;
+  Cube->CreateFixture(&CubeFixDef);
+
+  b2BodyDef CubeDef;
+  
+  CubeDef.position = b2Vec2(850/METERTOPIXEL, 0/METERTOPIXEL);
+  CubeDef.type = b2_dynamicBody;
+  CubeDef.userData = &_boat;
+  CubeDef.fixedRotation = true;
+  b2Body* Cube = _world.CreateBody(&CubeDef);
+  b2PolygonShape CubeShape;
+  CubeShape.SetAsBox(70/METERTOPIXEL, 10/METERTOPIXEL);
+  b2FixtureDef CubeFixDef;
+  CubeFixDef.density = 0.f;
+  CubeFixDef.friction = 0.f;
   CubeFixDef.shape = &CubeShape;
   Cube->CreateFixture(&CubeFixDef);
 }
