@@ -17,16 +17,6 @@ int GameController::eventManager(Event event)
     {
       if (event.key.code == sf::Keyboard::Escape)
 	_window->close();
-      if (event.key.code == sf::Keyboard::Right)
-	{
-	  b2Vec2 force(50, 0);
-	  _player->ApplyForceToCenter(force, true);
-	}
-      if (event.key.code == sf::Keyboard::Left)
-	{
-	  b2Vec2 force(-10, 0);
-	  _player->ApplyLinearImpulse(force, _player->GetWorldCenter(), true);
-	}
     }
 
 }
@@ -95,17 +85,19 @@ int	GameController::display()
 	}
     }
   
-  if (_kernel->_listener->nbHand == 1)
+  if (_kernel->_listener->swipe_b)
     {
-      b2Vec2 force(0, 500);
-      _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
-    }
-  if (_kernel->_listener->nbHand == 2)
-    {
-      b2Vec2 force(0, -500);
-      _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
+	  b2Vec2 force(0, _kernel->_listener->vector_h[1] * -500);
+	  _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
+	  
+	  b2Vec2 force2(_kernel->_listener->vector_h[0] * 1000, 0);
+	  _player->ApplyForceToCenter(force2, true);
+
+	  _kernel->_listener->swipe_b = 0;
     }
   
+  
+
   for(int x = 0; x < _particleSystem->GetParticleCount();++x)
     {
       b2Vec2 pos = _particleSystem->GetPositionBuffer()[x];
