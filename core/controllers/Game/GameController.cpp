@@ -46,24 +46,44 @@ void    GameController::addExplosion(double x, double y) {
 
 void		GameController::BonusFactory()
 {
-  if (random() % 107 == 17)
+  int r;
+  if (random() % 307 == 17)
     {
       b2BodyDef	RockDef;
       b2Vec2	move(-6.f, 5.f);
+      b2FixtureDef RockFixDef;
       RockDef.linearVelocity = move;
       RockDef.bullet = true;
       RockDef.position = b2Vec2((random() % (WIDTH - 200) + 100) /METERTOPIXEL,0.f);
       RockDef.type = b2_kinematicBody;
-      RockDef.userData = &_blue;
       RockDef.fixedRotation = true;
+      r = random() % 4;
+      if (r == 0)
+	{
+	  RockDef.userData = &_blue;
+	  RockFixDef.userData = &_blue;
+	}
+      else if (r == 1)
+	{
+	  RockDef.userData = &_purple;
+	  RockFixDef.userData = &_purple;
+	}
+      else if (r == 2)
+	{
+	  RockDef.userData = &_red;
+	  RockFixDef.userData = &_red;
+	}
+      else
+	{
+	  RockDef.userData = &_green;
+	  RockFixDef.userData = &_green;
+	}
       b2Body* Rock = _world.CreateBody(&RockDef);
       b2PolygonShape RockShape;
       RockShape.SetAsBox(20/METERTOPIXEL, 20/METERTOPIXEL);
-      b2FixtureDef RockFixDef;
       RockFixDef.density = 0.f;
       RockFixDef.friction = 0.f;
       RockFixDef.shape = &RockShape;
-      RockFixDef.userData = &_blue;
       Rock->CreateFixture(&RockFixDef);
     }
 }
@@ -78,8 +98,8 @@ void		GameController::RocketFactory()
       RockDef.bullet = true;
       RockDef.position = b2Vec2(WIDTH/METERTOPIXEL, (random() % (HEIGHT - 200) + 100) /METERTOPIXEL);
       RockDef.type = b2_kinematicBody;
-      RockDef.userData = &_rock;
       RockDef.fixedRotation = true;
+      RockDef.userData = &_rock;
       b2Body* Rock = _world.CreateBody(&RockDef);
       b2PolygonShape RockShape;
       RockShape.SetAsBox(30/METERTOPIXEL, 5/METERTOPIXEL);
@@ -227,6 +247,30 @@ int	GameController::display()
 	      box_blue.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x),
 			       METERTOPIXEL * (BodyIterator->GetPosition().y));
 	      _window->draw(box_blue);
+	    }
+	  else if (*((string *)(BodyIterator->GetUserData())) == string("purple"))
+	    {
+	      Sprite	box_purple(_box_purple);
+
+	      box_purple.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x),
+			       METERTOPIXEL * (BodyIterator->GetPosition().y));
+	      _window->draw(box_purple);
+	    }
+	  else if (*((string *)(BodyIterator->GetUserData())) == string("red"))
+	    {
+	      Sprite	box_red(_box_red);
+
+	      box_red.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x),
+			       METERTOPIXEL * (BodyIterator->GetPosition().y));
+	      _window->draw(box_red);
+	    }
+	  else if (*((string *)(BodyIterator->GetUserData())) == string("green"))
+	    {
+	      Sprite	box_green(_box_green);
+
+	      box_green.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x),
+			       METERTOPIXEL * (BodyIterator->GetPosition().y));
+	      _window->draw(box_green);
 	    }
 	}
     }
