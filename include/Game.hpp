@@ -56,12 +56,13 @@ private:
   string		_boat;
   string		_rock;
   void			RocketFactory();
+  int			_life;
 public:
   GameController(RenderWindow *window, SFMLKernel *kernel, const string &name);
   virtual ~GameController();
 
   int eventManager(Event event);
-    void addExplosion(double x, double y);
+  void addExplosion(double x, double y);
   int display();
   void init();
 };

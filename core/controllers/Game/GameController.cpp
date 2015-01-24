@@ -19,7 +19,7 @@ void loadSprite(int height, int width, int cotePx, Sprite *tabDst, string fileNa
 }
 
 
-GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : IController(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat"), _rock("rock")
+GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : IController(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat"), _rock("rock"), _life(100)
 {
   this->init();
   loadSprite(4, 4, 128, _explosion, "res/img/explosion.png", _tExplosion);
@@ -102,14 +102,19 @@ int	GameController::display()
 	  ((*A == "boat" && *B == "rock")
 	   || (*A == "rock" && *B == "boat")))
 	{
-
         b2Vec2 vec = _contact->_contacts[i].fixtureA->GetBody()->GetPosition();
 	// std::cout << "Add Explosion in X: " << vec.x << " Y: " << vec.y << endl;
         addExplosion(vec.x * METERTOPIXEL, vec.y * METERTOPIXEL);
 	  if (*B == "rock")
-	    _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
+	    {
+	      _life += _contact->_contacts[i].fixtureA->GetBody()->GetLinearVelocity().x;
+	      _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
+	    }
 	  else if (*A == "rock")
-	    _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
+	    {
+	      _life += _contact->_contacts[i].fixtureB->GetBody()->GetLinearVelocity().x;
+	      _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
+	    }
 	}
     }
   
@@ -217,6 +222,17 @@ int	GameController::display()
 	    size = _listExplosions.size();
 	  }
     }
+    sf::RectangleShape rectangle(sf::Vector2f(200, 15));
+    rectangle.setPosition(20, HEIGHT - 35.);
+    _window->draw(rectangle);
+    sf::RectangleShape rectangle2(sf::Vector2f(194, 9));
+    rectangle2.setPosition(23, HEIGHT - 32.);
+    rectangle2.setFillColor(sf::Color(0, 0, 0));
+    _window->draw(rectangle2);
+    sf::RectangleShape rectangle3(sf::Vector2f(_life * 194.f / 100.f, 9));
+    rectangle3.setPosition(23, HEIGHT - 32.);
+    rectangle3.setFillColor(sf::Color(255 * ((100.f - _life) / 100.f), 255 * (_life / 100.f), 0));
+    _window->draw(rectangle3);
 }
 
 Texture&	GameController::LoadImage(const std::string& img)
@@ -247,7 +263,7 @@ void		GameController::init()
   _water.setTexture(LoadImage("data/water.png"));
   _water.setOrigin(8, 8);
   _box.setTexture(LoadImage("data/boat.png"));
-  _box.setOrigin(107.5f, 125.5f);
+  _box.setOrigin(107.5f, 140.5f);
   _missile.setTexture(LoadImage("data/missile.jpg"));
   
   _backgroundtext.create(WIDTH, HEIGHT);
@@ -260,11 +276,11 @@ void		GameController::init()
   _world.SetContactListener(_contact);
   
   b2ParticleDef		pd;
-  
+
   pd.lifetime = 0.0f;
   pd.flags = b2_tensileParticle;
   pd.velocity.Set(1, 0);
-
+  
   for (int j = 1000; j < HEIGHT; j += 2)
     {
       for (int i = 0; i <= WIDTH; i += 5)
@@ -318,14 +334,33 @@ void		GameController::init()
   rightWallFixDef.shape = &rightWallShape;
   RightWall->CreateFixture(&rightWallFixDef);
 
+  b2Vec2 mVertices[8];
+  mVertices[0].x = -70/ METERTOPIXEL;
+  mVertices[0].y = -16/ METERTOPIXEL;
+  mVertices[1].x = -10/ METERTOPIXEL;
+  mVertices[1].y = -16/ METERTOPIXEL;
+  mVertices[2].x = -10/ METERTOPIXEL;
+  mVertices[2].y = -56/ METERTOPIXEL;
+  mVertices[3].x = 10/ METERTOPIXEL;
+  mVertices[3].y = -56/ METERTOPIXEL;
+  mVertices[4].x = 10/ METERTOPIXEL;
+  mVertices[4].y = -16/ METERTOPIXEL;
+  mVertices[5].x = 70/ METERTOPIXEL;
+  mVertices[5].y = -16/ METERTOPIXEL;
+  mVertices[6].x = 30/ METERTOPIXEL;
+  mVertices[6].y = 24/ METERTOPIXEL;
+  mVertices[7].x = -30/ METERTOPIXEL;
+  mVertices[7].y = 24/ METERTOPIXEL;
+
   b2BodyDef CubeDef;
-  CubeDef.position = b2Vec2(850/METERTOPIXEL, 150/METERTOPIXEL);
+  CubeDef.position = b2Vec2(850/METERTOPIXEL, 750/METERTOPIXEL);
   CubeDef.type = b2_dynamicBody;
   CubeDef.userData = &_boat;
   CubeDef.fixedRotation = true;
   _player = _world.CreateBody(&CubeDef);
   b2PolygonShape CubeShape;
-  CubeShape.SetAsBox(70/METERTOPIXEL, 20/METERTOPIXEL);
+  CubeShape.Set(mVertices, 8);
+  //CubeShape.SetAsBox(70/METERTOPIXEL, 20/METERTOPIXEL);
   b2FixtureDef CubeFixDef;
   CubeFixDef.density = 0.f;
   CubeFixDef.friction = 0.f;
