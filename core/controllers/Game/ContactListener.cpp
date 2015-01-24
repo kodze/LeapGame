@@ -9,6 +9,7 @@
 //
 
 #include "ContactListener.hpp"
+#include "../../../include/ContactListener.hpp"
 
 MyContactListener::MyContactListener() : _contacts()
 {}
@@ -20,6 +21,7 @@ void	 MyContactListener::BeginContact(b2Contact* contact)
 {
   MyContact myContact = { contact->GetFixtureA(), contact->GetFixtureB() };
   _contacts.push_back(myContact);
+
 }
 
 void	MyContactListener::EndContact(b2Contact* contact)

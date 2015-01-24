@@ -1,9 +1,27 @@
 #include "../../../include/Game.hpp"
 
+void loadSprite(int height, int width, int cotePx, Sprite *tabDst, string fileName, Texture *tExplosion)
+{
+    int size = width * height;
+    int pos = 0;
+    --cotePx;
+    int x;
+    int y;
+    while (pos < size)
+    {
+        x = pos % width;
+        y = pos / height;
+        tExplosion[pos].loadFromFile(fileName, sf::IntRect(x * cotePx + 3, y * cotePx + 3, cotePx - 3, cotePx - 3));
+        tabDst[pos].setTexture(tExplosion[pos]);
+        ++pos;
+    }
+}
+
 
 GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : IController(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat"), _rock("rock")
 {
   this->init();
+  loadSprite(4, 4, 128, _explosion, "res/img/explosion.png", _tExplosion);
 }
 
 GameController::~GameController()
@@ -16,14 +34,18 @@ int GameController::eventManager(Event event)
   if (event.type == sf::Event::KeyPressed)
     {
       if (event.key.code == sf::Keyboard::Escape)
-	_window->close();
+	    _window->close();
     }
 
 }
 
+void    GameController::addExplosion(double x, double y) {
+    _listExplosions.push_back(new Explosion(x, y, _explosion));
+}
+
 void		GameController::RocketFactory()
 {
-  if (random() % 30 == 22)
+  if (random() % 23 == 22)
     {
       b2BodyDef	RockDef;
       b2Vec2	move((random() % 25 + 8) * -1, 0);
@@ -47,6 +69,7 @@ void		GameController::RocketFactory()
 
 int	GameController::display()
 {
+
   float32 timeStep = 1.0f / 60.0f;
   int32 iterations = 8;
 
@@ -78,11 +101,15 @@ int	GameController::display()
 	  ((*A == "boat" && *B == "rock")
 	   || (*A == "rock" && *B == "boat")))
 	{
+
+        b2Vec2 vec = _contact->_contacts[i].fixtureA->GetBody()->GetPosition();
+        std::cout << "Add Explosion in X: " << vec.x << " Y: " << vec.y << endl;
+        addExplosion(vec.x * METERTOPIXEL, vec.y * METERTOPIXEL);
 	  if (*B == "rock")
 	    _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
 	  else if (*A == "rock")
 	    _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
-	}
+    }
     }
   
   if (_kernel->_listener->swipe_b)
@@ -162,6 +189,29 @@ int	GameController::display()
 	      _window->draw(rock);
 	    }
 	}
+    }
+
+    // Display Sprite
+
+
+    int size = _listExplosions.size();
+    Explosion *tmp;
+    for (int i = 0; i < size; i++)
+    {
+        tmp = _listExplosions.at(i);
+        if (tmp->_i < 16)
+        {
+            tmp->_sprite[tmp->_i].setPosition(tmp->_x, tmp->_y);
+
+            _window->draw(tmp->_sprite[tmp->_i]);
+            ++tmp->_i;
+            if (tmp->_x - 5 >= 0)
+                tmp->_x -= 5;
+            else
+                tmp->_x = 0;
+        }
+        else
+            _listExplosions.erase(_listExplosions.begin() + i);
     }
 }
 

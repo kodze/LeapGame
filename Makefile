@@ -25,11 +25,11 @@ SRC		= main.cpp \
 
 OBJ		= $(SRC:.cpp=.o)
 
-CC		= g++
+CC		= g++ -O3
 
 CPPFLAGS	= -I include -O3
 
-LDFLAGS		= -lsfml-graphics -lsfml-window -lsfml-system -lliquidfun
+LDFLAGS		= -lsfml-graphics -lsfml-window -lsfml-system -lliquidfun -lz
 
 RM		= rm -rf
 
