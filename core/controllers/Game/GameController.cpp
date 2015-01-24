@@ -13,15 +13,53 @@ GameController::~GameController()
 
 int GameController::eventManager(Event event)
 {
-  if (event.type == sf::Event::MouseButtonPressed)
+  if (event.type == sf::Event::KeyPressed)
     {
-      if (event.mouseButton.button == sf::Mouse::Left)
+      if (event.key.code == sf::Keyboard::Down)
+	{
+	  b2Vec2 force(0, 500);
+	  _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
+	}
+      if (event.key.code == sf::Keyboard::Up)
 	{
 	  b2Vec2 force(0, -500);
 	  _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
 	}
+      if (event.key.code == sf::Keyboard::Right)
+	{
+	  b2Vec2 force(50, 0);
+	  _player->ApplyForceToCenter(force, true);
+	}
+      if (event.key.code == sf::Keyboard::Left)
+	{
+	  b2Vec2 force(-10, 0);
+	  _player->ApplyLinearImpulse(force, _player->GetWorldCenter(), true);
+	}
     }
 
+}
+
+void		GameController::RocketFactory()
+{
+  if (random() % 60 == 22)
+    {
+      b2BodyDef	RockDef;
+      b2Vec2	move((random() % 25 + 8) * -1, 0);
+      RockDef.linearVelocity = move;
+      RockDef.bullet = true;
+      RockDef.position = b2Vec2(WIDTH/METERTOPIXEL, (random() % (HEIGHT - 200) + 100) /METERTOPIXEL);
+      RockDef.type = b2_kinematicBody;
+      RockDef.userData = &_rock;
+      RockDef.fixedRotation = true;
+      b2Body* Rock = _world.CreateBody(&RockDef);
+      b2PolygonShape RockShape;
+      RockShape.SetAsBox(30/METERTOPIXEL, 5/METERTOPIXEL);
+      b2FixtureDef RockFixDef;
+      RockFixDef.density = 0.f;
+      RockFixDef.friction = 0.f;
+      RockFixDef.shape = &RockShape;
+      Rock->CreateFixture(&RockFixDef);  
+    }
 }
 
 int	GameController::display()
@@ -29,14 +67,16 @@ int	GameController::display()
   float32 timeStep = 1.0f / 60.0f;
   int32 iterations = 8;
 
+  RocketFactory();
+  
   _window->clear();
   _backgroundtext.clear(sf::Color(0, 0, 0, 0));
   _backgroundtext2.clear(sf::Color(0, 0, 0, 0));
   _backgroundtext3.clear(sf::Color(0, 0, 0, 0));
   _world.Step(timeStep, iterations, 2);
 
-  _background.move(-5.f, 0);
-  _background2.move(-5.f, 0);
+  _background.move(-6.f, 0);
+  _background2.move(-6.f, 0);
   if (_background.getPosition().x <= -1920.f)
     _background.setPosition(1920.f, 0);
   if (_background2.getPosition().x <= -1920.f)
@@ -79,10 +119,10 @@ int	GameController::display()
 	    }
 	  else
 	    {
-	      Sprite	rock(_box);
-	      
-	      rock.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x - 1.5f),
-			       METERTOPIXEL * (BodyIterator->GetPosition().y - 1.5f));
+	      Sprite	rock(_missile);
+	     
+	      rock.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x),
+			       METERTOPIXEL * (BodyIterator->GetPosition().y));
 	      _window->draw(rock);
 	    }
 	}
@@ -118,6 +158,7 @@ void		GameController::init()
   _water.setTexture(LoadImage("data/water.png"));
   _water.setOrigin(8, 8);
   _box.setTexture(LoadImage("data/boat.png"));
+  _missile.setTexture(LoadImage("data/missile.jpg"));
   
   _backgroundtext.create(WIDTH, HEIGHT);
   _backgroundtext2.create(WIDTH, HEIGHT);
@@ -179,27 +220,12 @@ void		GameController::init()
   CubeDef.type = b2_dynamicBody;
   CubeDef.userData = &_boat;
   CubeDef.fixedRotation = true;
-  b2Body* Cube = _world.CreateBody(&CubeDef);
+  _player = _world.CreateBody(&CubeDef);
   b2PolygonShape CubeShape;
   CubeShape.SetAsBox(70/METERTOPIXEL, 10/METERTOPIXEL);
   b2FixtureDef CubeFixDef;
   CubeFixDef.density = 0.f;
   CubeFixDef.friction = 0.f;
   CubeFixDef.shape = &CubeShape;
-  Cube->CreateFixture(&CubeFixDef);
-
-  b2BodyDef CubeDef;
-  
-  CubeDef.position = b2Vec2(850/METERTOPIXEL, 0/METERTOPIXEL);
-  CubeDef.type = b2_dynamicBody;
-  CubeDef.userData = &_boat;
-  CubeDef.fixedRotation = true;
-  b2Body* Cube = _world.CreateBody(&CubeDef);
-  b2PolygonShape CubeShape;
-  CubeShape.SetAsBox(70/METERTOPIXEL, 10/METERTOPIXEL);
-  b2FixtureDef CubeFixDef;
-  CubeFixDef.density = 0.f;
-  CubeFixDef.friction = 0.f;
-  CubeFixDef.shape = &CubeShape;
-  Cube->CreateFixture(&CubeFixDef);
+  _player->CreateFixture(&CubeFixDef);
 }

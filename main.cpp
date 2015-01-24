@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 
 using namespace std;
 
@@ -8,5 +10,6 @@ int main()
 {
     SFMLKernel kernel;
 
+    srandom(time(NULL));
     kernel.loop();
 }
