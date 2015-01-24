@@ -158,7 +158,7 @@ int	GameController::display()
 	      if ((BodyIterator->GetPosition().y * METERTOPIXEL) < HEIGHT / 2)
 	      	{
 	      	  b2Vec2 force2 = _player->GetLinearVelocity();
-	      	  force2.y += 5;
+	      	  force2.y += 3;
 	      	  _player->SetLinearVelocity(force2);
 	      	}
 	      if ((BodyIterator->GetPosition().y * METERTOPIXEL) > (HEIGHT - HEIGHT / 4))
@@ -166,8 +166,8 @@ int	GameController::display()
 	      	  b2Vec2 force2(0, -40);
 	      	  _player->ApplyForceToCenter(force2, true);
 	      	}
-	      box.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x - 1.6f),
-			      METERTOPIXEL * (BodyIterator->GetPosition().y - 0.5f));
+	      box.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x),
+			      METERTOPIXEL * (BodyIterator->GetPosition().y));
 	      b2Vec2 force = _player->GetLinearVelocity();
 	      
 	      if (force.x > 20.f)
@@ -243,6 +243,7 @@ void		GameController::init()
   _water.setTexture(LoadImage("data/water.png"));
   _water.setOrigin(8, 8);
   _box.setTexture(LoadImage("data/boat.png"));
+  _box.setOrigin(107.5f, 107.5f);
   _missile.setTexture(LoadImage("data/missile.jpg"));
   
   _backgroundtext.create(WIDTH, HEIGHT);
