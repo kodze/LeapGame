@@ -8,11 +8,11 @@ SRC		= main.cpp \
 
 OBJ		= $(SRC:.cpp=.o)
 
-CC		= g++ -lsfml-graphics -lsfml-window -lsfml-system
+CC		= g++
 
-CPPFLAGS	= -I include
+CPPFLAGS	= -I include -g
 
-LDFLAGS		=
+LDFLAGS		= -lsfml-graphics -lsfml-window -lsfml-system -lliquidfun
 
 RM		= rm -rf
 
@@ -25,6 +25,6 @@ clean:
 	$(RM) $(OBJ)
 
 fclean: clean
-	$(RM) $(OBJ)
+	$(RM) $(NAME)
 
 re: fclean all
