@@ -36,18 +36,14 @@ void SampleListener::onFrame(const Controller& controller) {
     GestureList  gesture = frame.gestures();
     nbHand = frame.hands().count();
 
+    hand[0] = 0.f;
+    hand[1] = 0.f;
+    hand[2] = 0.f;
     for(HandList::const_iterator hl = handList.begin(); hl != handList.end(); hl++) {
-        Hand hand = *hl;
-        if (hand.isLeft() == true){
-            left_h[0] = hand.palmPosition().x;
-            left_h[1] = hand.palmPosition().y;
-            left_h[2] = hand.palmPosition().z;
-        }
-        else if (hand.isRight() == true) {
-            right_h[0] = hand.palmPosition().x;
-            right_h[1] = hand.palmPosition().y;
-            right_h[2] = hand.palmPosition().z;
-        }
+      Hand h = *hl;
+      hand[0] = h.palmPosition().x;
+      hand[1] = h.palmPosition().y;
+      hand[2] = h.palmPosition().z;
     }
 
     for (GestureList::const_iterator gl = gesture.begin(); gl != gesture.end(); gl++) {
