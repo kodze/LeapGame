@@ -1,7 +1,7 @@
 #include "../../../include/Game.hpp"
 
 
-GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : Controller(window, kernel, name), _gravity(0.0f, 9.8f) ,_world(_gravity)
+GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : Controller(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity)
 {
   this->init();
 }
@@ -13,6 +13,16 @@ GameController::~GameController()
 
 int GameController::eventManager(Event event)
 {
+  if (event.type == sf::Event::MouseButtonPressed)
+    {
+      if (event.mouseButton.button == sf::Mouse::Left)
+	{
+	  cout << "TOTO" <<endl;
+	  b2Vec2 force(0, 1500);
+	  _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
+	}
+    }
+
 }
 
 int	GameController::display()
@@ -82,7 +92,7 @@ void		GameController::init()
   _background.setTexture(LoadImage("data/background.jpg"));
   _background.setOrigin(0,0);
   _background.setPosition(0,0);
-  _water.setTexture(LoadImage("data/water.png"));
+  _water.setTexture(LoadImage("data/water2.png"));
   _water.setOrigin(8, 8);
   _box.setTexture(LoadImage("data/box.png"));
   _box.setOrigin(16.f, 16.f);
@@ -91,14 +101,14 @@ void		GameController::init()
   _backgroundtext2.create(WIDTH, HEIGHT);
   _backgroundtext3.create(WIDTH, HEIGHT);
 
-  _particleSystemDef.radius = 6/METERTOPIXEL;
+  _particleSystemDef.radius = 10/METERTOPIXEL;
   _particleSystem = _world.CreateParticleSystem(&_particleSystemDef);
 
   b2ParticleDef		pd;
   
   pd.lifetime = 60;
   pd.flags = b2_tensileParticle;
-  pd.velocity = b2Vec2(0,5);
+  pd.velocity = b2Vec2(3.f, 0);
 
   for (int j = 900; j < HEIGHT; j += 4)
     {
