@@ -31,10 +31,23 @@ void SampleListener::onExit(const Controller& controller) {
 
 void SampleListener::onFrame(const Controller& controller) {
   // Get the most recent frame and report some basic information
-  const Frame frame = controller.frame();
+    const Frame frame = controller.frame();
+    HandList handList = frame.hands();
     nbHand = frame.hands().count();
 
-
+    for(HandList::const_iterator hl = handList.begin(); hl != handList.end(); hl++) {
+        Hand hand = *hl;
+        if (hand.isLeft() == true){
+            left_h[0] = hand.palmPosition().x;
+            left_h[1] = hand.palmPosition().y;
+            left_h[2] = hand.palmPosition().z;
+        }
+        else if (hand.isRight() == true) {
+            right_h[0] = hand.palmPosition().x;
+            right_h[1] = hand.palmPosition().y;
+            right_h[2] = hand.palmPosition().z;
+        }
+    }
     /*
             std::cout << "Frame id: " << frame.id()
             << ", timestamp: " << frame.timestamp()

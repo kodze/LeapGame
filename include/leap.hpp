@@ -21,7 +21,8 @@ public:
     virtual void onServiceDisconnect(const Controller&);
 
     int nbHand;
-
+    double left_h[3];
+    double right_h[3];
 private:
 };
 
