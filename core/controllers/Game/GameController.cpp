@@ -4,15 +4,16 @@ void loadSprite(int height, int width, int cotePx, Sprite *tabDst, string fileNa
 {
     int size = width * height;
     int pos = 0;
-    --cotePx;
+
     int x;
     int y;
     while (pos < size)
     {
         x = pos % width;
         y = pos / height;
-        tExplosion[pos].loadFromFile(fileName, sf::IntRect(x * cotePx + 3, y * cotePx + 3, cotePx - 3, cotePx - 3));
+        tExplosion[pos].loadFromFile(fileName, sf::IntRect(x * cotePx + 10, y * cotePx + 10, cotePx - 15, cotePx - 15));
         tabDst[pos].setTexture(tExplosion[pos]);
+	tabDst[pos].setOrigin((cotePx - 15) / 2, (cotePx - 15) / 2);
         ++pos;
     }
 }
@@ -45,7 +46,7 @@ void    GameController::addExplosion(double x, double y) {
 
 void		GameController::RocketFactory()
 {
-  if (random() % 23 == 22)
+  if (random() % 30 == 22)
     {
       b2BodyDef	RockDef;
       b2Vec2	move((random() % 25 + 8) * -1, 0);
@@ -103,13 +104,13 @@ int	GameController::display()
 	{
 
         b2Vec2 vec = _contact->_contacts[i].fixtureA->GetBody()->GetPosition();
-        std::cout << "Add Explosion in X: " << vec.x << " Y: " << vec.y << endl;
+	// std::cout << "Add Explosion in X: " << vec.x << " Y: " << vec.y << endl;
         addExplosion(vec.x * METERTOPIXEL, vec.y * METERTOPIXEL);
 	  if (*B == "rock")
 	    _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
 	  else if (*A == "rock")
 	    _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
-    }
+	}
     }
   
   if (_kernel->_listener->swipe_b)
@@ -205,13 +206,16 @@ int	GameController::display()
 
             _window->draw(tmp->_sprite[tmp->_i]);
             ++tmp->_i;
-            if (tmp->_x - 5 >= 0)
-                tmp->_x -= 5;
+            if (tmp->_x - 15 >= 0)
+                tmp->_x -= 15;
             else
                 tmp->_x = 0;
         }
         else
-            _listExplosions.erase(_listExplosions.begin() + i);
+	  {
+	    _listExplosions.erase(_listExplosions.begin() + i);
+	    size = _listExplosions.size();
+	  }
     }
 }
 
@@ -243,7 +247,7 @@ void		GameController::init()
   _water.setTexture(LoadImage("data/water.png"));
   _water.setOrigin(8, 8);
   _box.setTexture(LoadImage("data/boat.png"));
-  _box.setOrigin(107.5f, 107.5f);
+  _box.setOrigin(107.5f, 125.5f);
   _missile.setTexture(LoadImage("data/missile.jpg"));
   
   _backgroundtext.create(WIDTH, HEIGHT);
@@ -321,7 +325,7 @@ void		GameController::init()
   CubeDef.fixedRotation = true;
   _player = _world.CreateBody(&CubeDef);
   b2PolygonShape CubeShape;
-  CubeShape.SetAsBox(70/METERTOPIXEL, 10/METERTOPIXEL);
+  CubeShape.SetAsBox(70/METERTOPIXEL, 20/METERTOPIXEL);
   b2FixtureDef CubeFixDef;
   CubeFixDef.density = 0.f;
   CubeFixDef.friction = 0.f;
