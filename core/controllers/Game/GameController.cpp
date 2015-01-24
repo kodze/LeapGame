@@ -34,7 +34,15 @@ int	GameController::display()
   _backgroundtext2.clear(sf::Color(0, 0, 0, 0));
   _backgroundtext3.clear(sf::Color(0, 0, 0, 0));
   _world.Step(timeStep, iterations, 2);
+
+  _background.move(-5.f, 0);
+  _background2.move(-5.f, 0);
+  if (_background.getPosition().x <= -1920.f)
+    _background.setPosition(1920.f, 0);
+  if (_background2.getPosition().x <= -1920.f)
+    _background2.setPosition(1920.f, 0);
   _window->draw(_background);
+  _window->draw(_background2);
 
   for(int x = 0; x < _particleSystem->GetParticleCount();++x)
     {
@@ -63,9 +71,8 @@ int	GameController::display()
 	{
 	  Sprite	box(_box);
 	  
-	  box.setPosition(METERTOPIXEL * BodyIterator->GetPosition().x,
-			  METERTOPIXEL * BodyIterator->GetPosition().y);
-	  box.setRotation(BodyIterator->GetAngle() * 180/b2_pi);
+	  box.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x - 1.5f),
+			  METERTOPIXEL * (BodyIterator->GetPosition().y + 0.3f));
 	  _window->draw(box);
 	}
     }  
@@ -94,11 +101,13 @@ void		GameController::init()
   _background.setTexture(LoadImage("data/background.jpg"));
   _background.setOrigin(0,0);
   _background.setPosition(0,0);
+  _background2.setTexture(LoadImage("data/background.jpg"));
+  _background2.setOrigin(0,0);
+  _background2.setPosition(1920, 0);
   _water.setTexture(LoadImage("data/water.png"));
   _water.setOrigin(8, 8);
-  _box.setTexture(LoadImage("data/box.png"));
-  _box.setOrigin(16.f, 16.f);
-
+  _box.setTexture(LoadImage("data/boat.png"));
+  
   _backgroundtext.create(WIDTH, HEIGHT);
   _backgroundtext2.create(WIDTH, HEIGHT);
   _backgroundtext3.create(WIDTH, HEIGHT);
@@ -154,13 +163,21 @@ void		GameController::init()
   rightWallFixDef.shape = &rightWallShape;
   RightWall->CreateFixture(&rightWallFixDef);
 
+  b2Vec2 mVertices[2];
+  mVertices[0].x = 0/METERTOPIXEL;
+  mVertices[1].x = 0/METERTOPIXEL;
+
+  mVertices[0].y = 0/METERTOPIXEL;
+  mVertices[1].y = 100/METERTOPIXEL;
+  
   b2BodyDef CubeDef;
   CubeDef.position = b2Vec2(850/METERTOPIXEL, 0/METERTOPIXEL);
   CubeDef.type = b2_dynamicBody;
   CubeDef.userData = &_boat;
+  CubeDef.fixedRotation = true;
   b2Body* Cube = _world.CreateBody(&CubeDef);
   b2PolygonShape CubeShape;
-  CubeShape.SetAsBox(30/METERTOPIXEL, 30/METERTOPIXEL);
+  CubeShape.Set(mVertices, 2);
   b2FixtureDef CubeFixDef;
   CubeFixDef.density = 0.f;
   CubeFixDef.friction = 0.7f;

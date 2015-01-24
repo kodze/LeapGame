@@ -18,12 +18,14 @@ private:
   Shader		_blurv;
 
   Sprite		_background;
+  Sprite		_background2;
   Sprite		_water;
   Sprite		_box;
 
   b2Vec2		_gravity;
   b2World		_world;
   b2ParticleSystem*	_particleSystem;
+    b2ParticleSystem*	_particleSystem2;
   b2ParticleSystemDef	_particleSystemDef;
 
   RenderTexture		_backgroundtext;
