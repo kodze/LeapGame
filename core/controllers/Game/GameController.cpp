@@ -1,7 +1,7 @@
 #include "../../../include/Game.hpp"
 
 
-GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : Controller(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity)
+GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : Controller(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat")
 {
   this->init();
 }
@@ -17,8 +17,7 @@ int GameController::eventManager(Event event)
     {
       if (event.mouseButton.button == sf::Mouse::Left)
 	{
-	  cout << "TOTO" <<endl;
-	  b2Vec2 force(0, 1500);
+	  b2Vec2 force(0, 150);
 	  _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
 	}
     }
@@ -60,12 +59,15 @@ int	GameController::display()
   for (b2Body* BodyIterator = _world.GetBodyList(); BodyIterator != 0;
        BodyIterator = BodyIterator->GetNext())
     {
-      Sprite	box(_box);
-      
-      box.setPosition(METERTOPIXEL * BodyIterator->GetPosition().x,
-			 METERTOPIXEL * BodyIterator->GetPosition().y);
-      box.setRotation(BodyIterator->GetAngle() * 180/b2_pi);
-      _window->draw(box);
+      if (BodyIterator->GetUserData() != NULL)
+	{
+	  Sprite	box(_box);
+	  
+	  box.setPosition(METERTOPIXEL * BodyIterator->GetPosition().x,
+			  METERTOPIXEL * BodyIterator->GetPosition().y);
+	  box.setRotation(BodyIterator->GetAngle() * 180/b2_pi);
+	  _window->draw(box);
+	}
     }  
   _window->display();
 }
@@ -92,7 +94,7 @@ void		GameController::init()
   _background.setTexture(LoadImage("data/background.jpg"));
   _background.setOrigin(0,0);
   _background.setPosition(0,0);
-  _water.setTexture(LoadImage("data/water2.png"));
+  _water.setTexture(LoadImage("data/water.png"));
   _water.setOrigin(8, 8);
   _box.setTexture(LoadImage("data/box.png"));
   _box.setOrigin(16.f, 16.f);
@@ -101,16 +103,16 @@ void		GameController::init()
   _backgroundtext2.create(WIDTH, HEIGHT);
   _backgroundtext3.create(WIDTH, HEIGHT);
 
-  _particleSystemDef.radius = 10/METERTOPIXEL;
+  _particleSystemDef.radius = 6/METERTOPIXEL;
   _particleSystem = _world.CreateParticleSystem(&_particleSystemDef);
 
   b2ParticleDef		pd;
   
-  pd.lifetime = 60;
+  pd.lifetime = 0.0f;
   pd.flags = b2_tensileParticle;
-  pd.velocity = b2Vec2(3.f, 0);
+  pd.velocity.Set(1, 0);
 
-  for (int j = 900; j < HEIGHT; j += 4)
+  for (int j = 1000; j < HEIGHT; j += 2)
     {
       for (int i = 0; i <= WIDTH; i += 10)
 	{
@@ -155,6 +157,7 @@ void		GameController::init()
   b2BodyDef CubeDef;
   CubeDef.position = b2Vec2(850/METERTOPIXEL, 0/METERTOPIXEL);
   CubeDef.type = b2_dynamicBody;
+  CubeDef.userData = &_boat;
   b2Body* Cube = _world.CreateBody(&CubeDef);
   b2PolygonShape CubeShape;
   CubeShape.SetAsBox(30/METERTOPIXEL, 30/METERTOPIXEL);

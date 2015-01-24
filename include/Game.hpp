@@ -32,6 +32,7 @@ private:
 
   Texture&		LoadImage(const std::string&);
   Clock			_deltaClock;
+  string		_boat;
 public:
   GameController(RenderWindow *window, SFMLKernel *kernel, const string &name);
   virtual ~GameController();
