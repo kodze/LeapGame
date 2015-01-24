@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include "IController.hpp"
 #include "SFMLKernel.hpp"
+#include "ContactListener.hpp"
 
 using namespace std;
 using namespace sf;
@@ -29,7 +30,8 @@ private:
   b2ParticleSystem*	_particleSystem;
   b2ParticleSystemDef	_particleSystemDef;
   b2Body		*_player;
-  
+  MyContactListener	*_contact;
+
   RenderTexture		_backgroundtext;
   RenderTexture		_backgroundtext2;
   RenderTexture		_backgroundtext3;

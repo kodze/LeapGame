@@ -16,11 +16,12 @@ endif
 NAME		= LeapGame
 
 SRC		= main.cpp \
-          core/kernel/SFMLKernel.cpp \
-          core/controllers/IController.cpp \
-          core/controllers/Home/HomeController.cpp \
-          core/controllers/Game/GameController.cpp \
-          leap/leap.cpp \
+	          core/kernel/SFMLKernel.cpp \
+		  core/controllers/IController.cpp \
+		  core/controllers/Home/HomeController.cpp \
+		  core/controllers/Game/GameController.cpp \
+		  core/controllers/Game/ContactListener.cpp \
+		  leap/leap.cpp \
 
 OBJ		= $(SRC:.cpp=.o)
 

@@ -15,16 +15,8 @@ int GameController::eventManager(Event event)
 {
   if (event.type == sf::Event::KeyPressed)
     {
-      if (event.key.code == sf::Keyboard::Down)
-	{
-	  b2Vec2 force(0, 500);
-	  _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
-	}
-      if (event.key.code == sf::Keyboard::Up)
-	{
-	  b2Vec2 force(0, -500);
-	  _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
-	}
+      if (event.key.code == sf::Keyboard::Escape)
+	_window->close();
       if (event.key.code == sf::Keyboard::Right)
 	{
 	  b2Vec2 force(50, 0);
@@ -41,7 +33,7 @@ int GameController::eventManager(Event event)
 
 void		GameController::RocketFactory()
 {
-  if (random() % 60 == 22)
+  if (random() % 30 == 22)
     {
       b2BodyDef	RockDef;
       b2Vec2	move((random() % 25 + 8) * -1, 0);
@@ -58,7 +50,8 @@ void		GameController::RocketFactory()
       RockFixDef.density = 0.f;
       RockFixDef.friction = 0.f;
       RockFixDef.shape = &RockShape;
-      Rock->CreateFixture(&RockFixDef);  
+      RockFixDef.userData = &_rock;
+      Rock->CreateFixture(&RockFixDef);
     }
 }
 
@@ -84,6 +77,35 @@ int	GameController::display()
   _window->draw(_background);
   _window->draw(_background2);
 
+  std::vector<int>::size_type sz = _contact->_contacts.size();
+  
+  for (unsigned int i = 0; i < sz; i++)
+    {
+      string	*A = (string *)(_contact->_contacts[i].fixtureA->GetUserData());
+      string	*B = (string *)(_contact->_contacts[i].fixtureB->GetUserData());
+
+      if (A != NULL && B != NULL  &&
+	  ((*A == "boat" && *B == "rock")
+	   || (*A == "rock" && *B == "boat")))
+	{
+	  if (*B == "rock")
+	    _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
+	  else if (*A == "rock")
+	    _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
+	}
+    }
+  
+  if (_kernel->_listener->nbHand == 1)
+    {
+      b2Vec2 force(0, 500);
+      _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
+    }
+  if (_kernel->_listener->nbHand == 2)
+    {
+      b2Vec2 force(0, -500);
+      _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
+    }
+  
   for(int x = 0; x < _particleSystem->GetParticleCount();++x)
     {
       b2Vec2 pos = _particleSystem->GetPositionBuffer()[x];
@@ -154,7 +176,7 @@ void		GameController::init()
   _background.setPosition(0,0);
   _background2.setTexture(LoadImage("data/background.jpg"));
   _background2.setOrigin(0,0);
-  _background2.setPosition(1920, 0);
+  _background2.setPosition(1920.f, 0);
   _water.setTexture(LoadImage("data/water.png"));
   _water.setOrigin(8, 8);
   _box.setTexture(LoadImage("data/boat.png"));
@@ -166,6 +188,8 @@ void		GameController::init()
 
   _particleSystemDef.radius = 6/METERTOPIXEL;
   _particleSystem = _world.CreateParticleSystem(&_particleSystemDef);
+  _contact = new MyContactListener();
+  _world.SetContactListener(_contact);
   
   b2ParticleDef		pd;
   
@@ -193,6 +217,17 @@ void		GameController::init()
   floorFixDef.shape = &floorShape;
   Floor->CreateFixture(&floorFixDef);
 
+  b2BodyDef topDef;
+  topDef.position = b2Vec2(0/METERTOPIXEL, 0/METERTOPIXEL);
+  topDef.type = b2_staticBody;
+  b2Body* Top = _world.CreateBody(&topDef);
+  b2PolygonShape topShape;
+  topShape.SetAsBox(WIDTH/METERTOPIXEL, 1.f/METERTOPIXEL);
+  b2FixtureDef topFixDef;
+  topFixDef.density = 0.f;
+  topFixDef.shape = &topShape;
+  Top->CreateFixture(&topFixDef);
+
   b2BodyDef leftWallDef;
   leftWallDef.position = b2Vec2(WIDTH/METERTOPIXEL, 0/METERTOPIXEL);
   leftWallDef.type = b2_staticBody;
@@ -216,7 +251,7 @@ void		GameController::init()
   RightWall->CreateFixture(&rightWallFixDef);
 
   b2BodyDef CubeDef;
-  CubeDef.position = b2Vec2(850/METERTOPIXEL, 0/METERTOPIXEL);
+  CubeDef.position = b2Vec2(850/METERTOPIXEL, 150/METERTOPIXEL);
   CubeDef.type = b2_dynamicBody;
   CubeDef.userData = &_boat;
   CubeDef.fixedRotation = true;
@@ -227,5 +262,6 @@ void		GameController::init()
   CubeFixDef.density = 0.f;
   CubeFixDef.friction = 0.f;
   CubeFixDef.shape = &CubeShape;
+  CubeFixDef.userData = &_boat;
   _player->CreateFixture(&CubeFixDef);
 }
