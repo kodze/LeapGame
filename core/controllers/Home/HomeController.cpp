@@ -21,9 +21,7 @@ int HomeController::eventManager(Event event)
 {
     // Clic souris
 
-    if (_kernel->_listener->nbHand == 2)
-        _kernel->loadModule(IController::Game);
-if (event.type == sf::Event::MouseButtonPressed)
+  if (event.type == sf::Event::MouseButtonPressed)
     {
         // Clic droit
         if (event.mouseButton.button == sf::Mouse::Left)
@@ -65,5 +63,9 @@ int HomeController::display()
     _window->draw(rectangle);
     _window->draw(txt);
 
+    if (_kernel->_listener->nbHand == 2)
+      _kernel->loadModule(IController::Game);
+
+    
     //_window->draw(rectangle);
 }

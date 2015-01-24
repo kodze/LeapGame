@@ -87,16 +87,14 @@ int	GameController::display()
   
   if (_kernel->_listener->swipe_b)
     {
-	  b2Vec2 force(0, _kernel->_listener->vector_h[1] * -500);
-	  _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
+      b2Vec2 force(0, _kernel->_listener->vector_h[1] * -333);
+      _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
 	  
-	  b2Vec2 force2(_kernel->_listener->vector_h[0] * 1000, 0);
-	  _player->ApplyForceToCenter(force2, true);
+      // b2Vec2 force2(_kernel->_listener->vector_h[0] * 600, 0);
+      // _player->ApplyForceToCenter(force2, true);
 
-	  _kernel->_listener->swipe_b = 0;
+      _kernel->_listener->swipe_b = 0;
     }
-  
-  
 
   for(int x = 0; x < _particleSystem->GetParticleCount();++x)
     {
@@ -127,9 +125,33 @@ int	GameController::display()
 	    {
 	      Sprite	box(_box);
 	      
+	      b2Vec2 force2 = _player->GetLinearVelocity();
+	      force2.x += _kernel->_listener->right_h[0] / 80.f;
+	      _player->SetLinearVelocity(force2);
+	      if ((BodyIterator->GetPosition().y * METERTOPIXEL) < HEIGHT / 2)
+	      	{
+	      	  b2Vec2 force2 = _player->GetLinearVelocity();
+	      	  force2.y += 5;
+	      	  _player->SetLinearVelocity(force2);
+	      	}
+	      if ((BodyIterator->GetPosition().y * METERTOPIXEL) > (HEIGHT - HEIGHT / 4))
+	      	{
+	      	  b2Vec2 force2(0, -40);
+	      	  _player->ApplyForceToCenter(force2, true);
+	      	}
 	      box.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x - 1.6f),
 			      METERTOPIXEL * (BodyIterator->GetPosition().y - 0.5f));
+	      b2Vec2 force = _player->GetLinearVelocity();
+	      
+	      if (force.x > 20.f)
+		force.x = 20.f;
+	      if (force.y > 10.f)
+		force.y = 10.f;
+
+	      _player->SetLinearVelocity(force);
+
 	      _window->draw(box);
+
 	    }
 	  else
 	    {
@@ -141,7 +163,6 @@ int	GameController::display()
 	    }
 	}
     }
-  _window->display();
 }
 
 Texture&	GameController::LoadImage(const std::string& img)
@@ -252,7 +273,7 @@ void		GameController::init()
   CubeShape.SetAsBox(70/METERTOPIXEL, 10/METERTOPIXEL);
   b2FixtureDef CubeFixDef;
   CubeFixDef.density = 0.f;
-  CubeFixDef.friction = 0.f;
+  CubeFixDef.friction = 0.5f;
   CubeFixDef.shape = &CubeShape;
   CubeFixDef.userData = &_boat;
   _player->CreateFixture(&CubeFixDef);
