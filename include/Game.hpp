@@ -37,6 +37,10 @@ private:
   Sprite		_water;
   Sprite		_box;
   Sprite		_missile;
+  Sprite		_box_blue;
+  Sprite		_box_purple;
+  Sprite		_box_red;
+  Sprite		_box_green;
   Texture       _tExplosion[16];
   Sprite        _explosion[16];
   vector<Explosion *> _listExplosions;
@@ -51,11 +55,16 @@ private:
   RenderTexture		_backgroundtext2;
   RenderTexture		_backgroundtext3;
 
-  Texture&		LoadImage(const std::string&);
+  Texture&		LoadImage(const std::string&, bool=false);
   Clock			_deltaClock;
   string		_boat;
   string		_rock;
+  string		_blue;
+  string		_purple;
+  string		_red;
+  string		_green;
   void			RocketFactory();
+  void			BonusFactory();
   int			_life;
 public:
   GameController(RenderWindow *window, SFMLKernel *kernel, const string &name);

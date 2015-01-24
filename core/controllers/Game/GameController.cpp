@@ -19,7 +19,7 @@ void loadSprite(int height, int width, int cotePx, Sprite *tabDst, string fileNa
 }
 
 
-GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : IController(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat"), _rock("rock"), _life(100)
+GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : IController(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat"), _rock("rock"), _life(100) , _blue("blue") , _purple("purple") , _red("red") , _green("green")
 {
   this->init();
   loadSprite(4, 4, 128, _explosion, "res/img/explosion.png", _tExplosion);
@@ -44,6 +44,30 @@ void    GameController::addExplosion(double x, double y) {
     _listExplosions.push_back(new Explosion(x, y, _explosion));
 }
 
+void		GameController::BonusFactory()
+{
+  if (random() % 107 == 17)
+    {
+      b2BodyDef	RockDef;
+      b2Vec2	move(-6.f, 5.f);
+      RockDef.linearVelocity = move;
+      RockDef.bullet = true;
+      RockDef.position = b2Vec2((random() % (WIDTH - 200) + 100) /METERTOPIXEL,0.f);
+      RockDef.type = b2_kinematicBody;
+      RockDef.userData = &_blue;
+      RockDef.fixedRotation = true;
+      b2Body* Rock = _world.CreateBody(&RockDef);
+      b2PolygonShape RockShape;
+      RockShape.SetAsBox(20/METERTOPIXEL, 20/METERTOPIXEL);
+      b2FixtureDef RockFixDef;
+      RockFixDef.density = 0.f;
+      RockFixDef.friction = 0.f;
+      RockFixDef.shape = &RockShape;
+      RockFixDef.userData = &_blue;
+      Rock->CreateFixture(&RockFixDef);
+    }
+}
+
 void		GameController::RocketFactory()
 {
   if (random() % 30 == 22)
@@ -65,6 +89,7 @@ void		GameController::RocketFactory()
       RockFixDef.shape = &RockShape;
       RockFixDef.userData = &_rock;
       Rock->CreateFixture(&RockFixDef);
+      
     }
 }
 
@@ -75,6 +100,7 @@ int	GameController::display()
   int32 iterations = 8;
 
   RocketFactory();
+  BonusFactory();
   
   _window->clear();
   _backgroundtext.clear(sf::Color(0, 0, 0, 0));
@@ -92,7 +118,7 @@ int	GameController::display()
   _window->draw(_background2);
 
   std::vector<int>::size_type sz = _contact->_contacts.size();
-  
+
   for (unsigned int i = 0; i < sz; i++)
     {
       string	*A = (string *)(_contact->_contacts[i].fixtureA->GetUserData());
@@ -117,12 +143,12 @@ int	GameController::display()
 	    }
 	}
     }
-  
+
   if (_kernel->_listener->swipe_b)
     {
       b2Vec2 force(0, _kernel->_listener->vector_h[1] * -333);
       _particleSystem->ApplyLinearImpulse(0, _particleSystem->GetParticleCount() - 1, force);
-	  
+
       // b2Vec2 force2(_kernel->_listener->vector_h[0] * 600, 0);
       // _player->ApplyForceToCenter(force2, true);
 
@@ -136,7 +162,7 @@ int	GameController::display()
       _backgroundtext.draw(_water);
     }
   _backgroundtext.display();
-  
+
   Sprite sprite(_backgroundtext.getTexture());
   _backgroundtext2.draw(sprite, &_blurh);
   _backgroundtext2.display();
@@ -157,7 +183,7 @@ int	GameController::display()
 	  if (*((string *)(BodyIterator->GetUserData())) == string("boat"))
 	    {
 	      Sprite	box(_box);
-	      
+
 	      b2Vec2 force2 = _player->GetLinearVelocity();
 	      force2.x += _kernel->_listener->hand[0] / 80.f;
 	      _player->SetLinearVelocity(force2);
@@ -175,7 +201,7 @@ int	GameController::display()
 	      box.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x),
 			      METERTOPIXEL * (BodyIterator->GetPosition().y));
 	      b2Vec2 force = _player->GetLinearVelocity();
-	      
+
 	      if (force.x > 20.f)
 		force.x = 20.f;
 	      if (force.y > 10.f)
@@ -186,13 +212,21 @@ int	GameController::display()
 	      _window->draw(box);
 
 	    }
-	  else
+	  else if (*((string *)(BodyIterator->GetUserData())) == string("rock"))
 	    {
 	      Sprite	rock(_missile);
-	     
+
 	      rock.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x),
 			       METERTOPIXEL * (BodyIterator->GetPosition().y));
 	      _window->draw(rock);
+	    }
+	  else if (*((string *)(BodyIterator->GetUserData())) == string("blue"))
+	    {
+	      Sprite	box_blue(_box_blue);
+
+	      box_blue.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x),
+			       METERTOPIXEL * (BodyIterator->GetPosition().y));
+	      _window->draw(box_blue);
 	    }
 	}
     }
@@ -235,11 +269,14 @@ int	GameController::display()
     _window->draw(rectangle3);
 }
 
-Texture&	GameController::LoadImage(const std::string& img)
+Texture&	GameController::LoadImage(const std::string& img, bool b)
 {
   sf::Image	tmp;
   tmp.loadFromFile(img);
-  tmp.createMaskFromColor(sf::Color(255,0,255),0);
+  if (b)
+    tmp.createMaskFromColor(sf::Color(255,255,255),0);
+  else
+    tmp.createMaskFromColor(sf::Color(255,0,255),0);
   sf::Texture *tex = new sf::Texture();
   tex->loadFromImage(tmp);
   return *tex;
@@ -265,6 +302,11 @@ void		GameController::init()
   _box.setTexture(LoadImage("data/boat.png"));
   _box.setOrigin(107.5f, 140.5f);
   _missile.setTexture(LoadImage("data/missile.jpg"));
+  _box_blue.setTexture(LoadImage("data/box_blue.png", true));
+  _box_purple.setTexture(LoadImage("data/box_purple.png", true));
+  _box_red.setTexture(LoadImage("data/box_red.png", true));
+  _box_green.setTexture(LoadImage("data/box_green.png", true));
+
   
   _backgroundtext.create(WIDTH, HEIGHT);
   _backgroundtext2.create(WIDTH, HEIGHT);
