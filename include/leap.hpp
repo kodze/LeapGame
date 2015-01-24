@@ -23,6 +23,10 @@ public:
     int nbHand;
     double left_h[3];
     double right_h[3];
+    double vector_h[3];
+    double gest_duration;
+    double speed;
+    bool   swipe_b;
 private:
 };
 

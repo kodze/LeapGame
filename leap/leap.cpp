@@ -33,6 +33,7 @@ void SampleListener::onFrame(const Controller& controller) {
   // Get the most recent frame and report some basic information
     const Frame frame = controller.frame();
     HandList handList = frame.hands();
+    GestureList  gesture = frame.gestures();
     nbHand = frame.hands().count();
 
     for(HandList::const_iterator hl = handList.begin(); hl != handList.end(); hl++) {
@@ -46,6 +47,20 @@ void SampleListener::onFrame(const Controller& controller) {
             right_h[0] = hand.palmPosition().x;
             right_h[1] = hand.palmPosition().y;
             right_h[2] = hand.palmPosition().z;
+        }
+    }
+
+    for (GestureList::const_iterator gl = gesture.begin(); gl != gesture.end(); gl++) {
+        Gesture gest = *gl;
+        if (gest.type() == Gesture::TYPE_SWIPE)
+        {
+            SwipeGesture swipe = gest;
+            vector_h[0] = swipe.direction().x;
+            vector_h[1] = swipe.direction().y;
+            vector_h[2] = swipe.direction().z;
+            gest_duration = gest.duration();
+            speed = swipe.speed();
+            swipe_b = true;
         }
     }
     /*
