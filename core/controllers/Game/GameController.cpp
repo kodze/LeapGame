@@ -47,6 +47,16 @@ int	GameController::display()
   _thresholdShader.setParameter("time", _deltaClock.getElapsedTime().asSeconds());
   _window->draw(sprite3, &_thresholdShader);
 
+  for (b2Body* BodyIterator = _world.GetBodyList(); BodyIterator != 0;
+       BodyIterator = BodyIterator->GetNext())
+    {
+      Sprite	box(_box);
+      
+      box.setPosition(METERTOPIXEL * BodyIterator->GetPosition().x,
+			 METERTOPIXEL * BodyIterator->GetPosition().y);
+      box.setRotation(BodyIterator->GetAngle() * 180/b2_pi);
+      _window->draw(box);
+    }  
   _window->display();
 }
 
@@ -74,22 +84,23 @@ void		GameController::init()
   _background.setPosition(0,0);
   _water.setTexture(LoadImage("data/water.png"));
   _water.setOrigin(8, 8);
+  _box.setTexture(LoadImage("data/box.png"));
+  _box.setOrigin(16.f, 16.f);
 
   _backgroundtext.create(WIDTH, HEIGHT);
   _backgroundtext2.create(WIDTH, HEIGHT);
   _backgroundtext3.create(WIDTH, HEIGHT);
 
-  _particleSystemDef.radius = 2/METERTOPIXEL;
+  _particleSystemDef.radius = 6/METERTOPIXEL;
   _particleSystem = _world.CreateParticleSystem(&_particleSystemDef);
 
   b2ParticleDef		pd;
   
   pd.lifetime = 60;
-  pd.flags = b2_springParticle;
+  pd.flags = b2_tensileParticle;
   pd.velocity = b2Vec2(0,5);
-  pd.position.Set(500/METERTOPIXEL, 500/METERTOPIXEL);
 
-  for (int j = 500; j < HEIGHT; j += 10)
+  for (int j = 900; j < HEIGHT; j += 4)
     {
       for (int i = 0; i <= WIDTH; i += 10)
 	{
@@ -99,7 +110,7 @@ void		GameController::init()
     }
 
   b2BodyDef floorDef;
-  floorDef.position = b2Vec2(0/METERTOPIXEL, 1000/METERTOPIXEL);
+  floorDef.position = b2Vec2(0/METERTOPIXEL, HEIGHT/METERTOPIXEL);
   floorDef.type = b2_staticBody;
   b2Body* Floor = _world.CreateBody(&floorDef);
   b2PolygonShape floorShape;
@@ -130,4 +141,16 @@ void		GameController::init()
   rightWallFixDef.density = 0.f;
   rightWallFixDef.shape = &rightWallShape;
   RightWall->CreateFixture(&rightWallFixDef);
+
+  b2BodyDef CubeDef;
+  CubeDef.position = b2Vec2(850/METERTOPIXEL, 0/METERTOPIXEL);
+  CubeDef.type = b2_dynamicBody;
+  b2Body* Cube = _world.CreateBody(&CubeDef);
+  b2PolygonShape CubeShape;
+  CubeShape.SetAsBox(30/METERTOPIXEL, 30/METERTOPIXEL);
+  b2FixtureDef CubeFixDef;
+  CubeFixDef.density = 0.f;
+  CubeFixDef.friction = 0.7f;
+  CubeFixDef.shape = &CubeShape;
+  Cube->CreateFixture(&CubeFixDef);
 }

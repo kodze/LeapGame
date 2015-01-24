@@ -19,6 +19,7 @@ private:
 
   Sprite		_background;
   Sprite		_water;
+  Sprite		_box;
 
   b2Vec2		_gravity;
   b2World		_world;
