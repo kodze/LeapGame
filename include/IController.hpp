@@ -3,13 +3,15 @@
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include "Leap.h"
 
 class SFMLKernel;
 
+using namespace Leap;
 using namespace std;
 using namespace sf;
 
-class Controller
+class IController
 {
 public:
     enum Module
@@ -18,13 +20,12 @@ public:
         Game
     };
 
-    Controller(RenderWindow *window, SFMLKernel *kernel, const string &name);
-    virtual ~Controller();
+    IController(RenderWindow *window, SFMLKernel *kernel, const string &name);
+    virtual ~IController();
 
     virtual int eventManager(Event event) = 0;
     virtual int display() = 0;
     virtual const string &getName() const;
-
 protected:
     string _name;
     RenderWindow *_window;

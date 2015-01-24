@@ -1,10 +1,26 @@
+OS := $(shell uname)
+ARCH := $(shell uname -m)
+
+ifeq ($(OS), Linux)
+  ifeq ($(ARCH), x86_64)
+    LEAP_LIBRARY := -lz ./lib/x64/libLeap.so -Wl,-rpath,./lib/x64
+  else
+    LEAP_LIBRARY := -lz ./lib/x86/libLeap.so -Wl,-rpath,./lib/x86
+  endif
+else
+  # OS X
+  LEAP_LIBRARY := ./lib/libLeap.dylib
+endif
+
+
 NAME		= LeapGame
 
 SRC		= main.cpp \
           core/kernel/SFMLKernel.cpp \
-          core/controllers/Controller.cpp \
+          core/controllers/IController.cpp \
           core/controllers/Home/HomeController.cpp \
           core/controllers/Game/GameController.cpp \
+          leap/leap.cpp \
 
 OBJ		= $(SRC:.cpp=.o)
 
@@ -17,7 +33,7 @@ LDFLAGS		= -lsfml-graphics -lsfml-window -lsfml-system -lliquidfun
 RM		= rm -rf
 
 $(NAME): $(OBJ)
-	$(CC) $(OBJ) -o $(NAME) $(CPPFLAGS) $(LDFLAGS)
+	$(CC) $(OBJ) -o $(NAME) $(LEAP_LIBRARY) $(CPPFLAGS) $(LDFLAGS)
 
 all: $(NAME)
 

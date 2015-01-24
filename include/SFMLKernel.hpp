@@ -4,13 +4,15 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
-#include "Controller.hpp"
+#include "Leap.h"
+#include "leap.hpp"
+#include "IController.hpp"
 #include "Home.hpp"
 #include "Game.hpp"
 
 using namespace std;
 using namespace sf;
-
+using namespace Leap;
 
 // Game configurations
 
@@ -21,14 +23,16 @@ using namespace sf;
 class SFMLKernel
 {
 public:
-    SFMLKernel();
+    SFMLKernel(SampleListener *listener, Controller *controller);
     int loop();
-    void loadModule(Controller::Module module);
+    void loadModule(IController::Module module);
     virtual ~SFMLKernel();
+    SampleListener *_listener;
+    Controller *_controller;
 
 private:
     RenderWindow *_window;
-    Controller *_currentModule;
+    IController *_currentModule;
 };
 
 #endif

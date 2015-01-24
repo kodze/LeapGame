@@ -2,12 +2,14 @@
 
 #include <unistd.h>
 
-HomeController::HomeController(RenderWindow *window, SFMLKernel *kernel, const string &name) : Controller(window, kernel, name)
+HomeController::HomeController(RenderWindow *window, SFMLKernel *kernel, const string &name) : IController(window, kernel, name)
 {
     if (!_backgroundImg.loadFromFile("res/img/backgroundHome.png"))
     {
         cerr << "-> " << _name << ": Loading Background Fail" << endl;
     }
+
+
 }
 
 HomeController::~HomeController()
@@ -19,6 +21,8 @@ int HomeController::eventManager(Event event)
 {
     // Clic souris
 
+    if (_kernel->_listener->nbHand == 2)
+        _kernel->loadModule(IController::Game);
 if (event.type == sf::Event::MouseButtonPressed)
     {
         // Clic droit
@@ -27,7 +31,7 @@ if (event.type == sf::Event::MouseButtonPressed)
             if (event.mouseButton.x >= WIDTH / 2 - 100 && event.mouseButton.x <= (WIDTH / 2 - 100) + 200 &&
                     event.mouseButton.y >= HEIGHT / 2 - 200 && event.mouseButton.y <= (HEIGHT / 2 - 200) + 100)
             {
-                _kernel->loadModule(Controller::Game);
+                _kernel->loadModule(IController::Game);
             }
         }
     }

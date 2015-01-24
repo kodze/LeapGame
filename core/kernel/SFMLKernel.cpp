@@ -1,25 +1,27 @@
 #include "../../include/SFMLKernel.hpp"
 
-SFMLKernel::SFMLKernel()
+SFMLKernel::SFMLKernel(SampleListener *list, Controller *contro)
 {
+    _listener = list;
+    _controller = contro;
     _window = new RenderWindow(sf::VideoMode(WIDTH, HEIGHT), GAME_NAME);
     _currentModule = new HomeController(_window, this, "Home");
     cout << "-> SFML initialisation : Done." << endl;
 }
 
-void SFMLKernel::loadModule(Controller::Module module)
+void SFMLKernel::loadModule(IController::Module module)
 {
-    Controller *tmp;
+    IController *tmp;
 
     tmp = _currentModule;
     std::cout << "test" << endl;
     switch (module)
     {
-        case Controller::Home:
+        case IController::Home:
             _currentModule = new HomeController(_window, this, "Home");
             break;
 
-        case Controller::Game:
+        case IController::Game:
             cout << "Changement vers game" << endl;
             _currentModule = new GameController(_window, this, "Game");
             break;

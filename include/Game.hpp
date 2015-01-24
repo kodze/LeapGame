@@ -3,7 +3,7 @@
 
 #include <Box2D/Box2D.h>
 #include <cstdlib>
-#include "Controller.hpp"
+#include "IController.hpp"
 #include "SFMLKernel.hpp"
 
 using namespace std;
@@ -11,7 +11,7 @@ using namespace sf;
 
 #define METERTOPIXEL 50.0f
 
-class GameController : public Controller
+class GameController : public IController
 {
 private:
   Shader		_thresholdShader;
