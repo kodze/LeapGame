@@ -22,8 +22,8 @@ void loadSprite(int height, int width, int cotePx, Sprite *tabDst, string fileNa
 GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : IController(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat"), _rock("rock"), _life(100) , _blue("blue") , _purple("purple") , _red("red") , _green("green"), _point(0), _swap(false), _mod(40)
 {
   this->init();
-  loadSprite(4, 4, 128, _explosion, "res/img/explosion.png", _tExplosion);
-  _font.loadFromFile("res/arial.ttf");
+  loadSprite(4, 4, 128, _explosion, "res/img_game/explosion.png", _tExplosion);
+  _font.loadFromFile("res/8-Bit-Madness.ttf");
 
   _score.setFont(_font);
   _score.setCharacterSize(50);

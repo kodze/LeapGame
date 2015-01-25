@@ -30,7 +30,7 @@ CC		= g++
 
 CPPFLAGS	= -I include -g -std=c++11
 
-LDFLAGS		= -lsfml-graphics -lsfml-window -lsfml-system -lliquidfun -lz
+LDFLAGS		= -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -lliquidfun -lz
 
 RM		= rm -rf
 

@@ -22,7 +22,10 @@ public:
     int display();
 
 private:
-    Texture _backgroundImg;
+  Sprite _background;
+  Sprite _background2;
+  Clock	_swapClock;
+  bool	_isFirst;
 };
 
 #endif

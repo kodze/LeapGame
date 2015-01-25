@@ -2,6 +2,7 @@
 # define __SFMLKERNEL_HPP__
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 
 #include "Leap.h"
@@ -32,8 +33,9 @@ public:
     Controller *_controller;
 
 private:
-    RenderWindow *_window;
-    IController *_currentModule;
+  RenderWindow *_window;
+  IController *_currentModule;
+  Music	 _music;
 };
 
 #endif

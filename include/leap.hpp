@@ -7,7 +7,7 @@
 
 using namespace Leap;
 
-class SampleListener : public Listener {
+class SampleListener : public Leap::Listener {
 public:
     virtual void onInit(const Controller&);
     virtual void onConnect(const Controller&);
