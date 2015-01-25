@@ -34,8 +34,6 @@ int GameController::eventManager(Event event)
 {
   if (event.type == sf::Event::KeyPressed)
     {
-      if (event.key.code == sf::Keyboard::Escape)
-	    _window->close();
     }
 
 }

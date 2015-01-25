@@ -28,7 +28,7 @@ OBJ		= $(SRC:.cpp=.o)
 
 CC		= g++ 
 
-CPPFLAGS	= -I include -g -std=c++11
+CPPFLAGS	= -I include -g
 
 LDFLAGS		= -lsfml-graphics -lsfml-window -lsfml-system -lliquidfun -lz
 

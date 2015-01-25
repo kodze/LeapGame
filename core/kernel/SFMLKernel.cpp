@@ -5,7 +5,7 @@ SFMLKernel::SFMLKernel(SampleListener *list, Controller *contro)
     _listener = list;
     _controller = contro;
     _window = new RenderWindow(sf::VideoMode(WIDTH, HEIGHT), GAME_NAME, sf::Style::Fullscreen);
-    _currentModule = new ResultsController(_window, this, "Home");
+    _currentModule = new HomeController(_window, this, "Home");
     cout << "-> SFML initialisation : Done." << endl;
 }
 
@@ -42,7 +42,7 @@ int SFMLKernel::loop()
 
         while (_window->pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed || event.key.code == sf::Keyboard::Escape)
                 _window->close();
             _currentModule->eventManager(event);
         }
