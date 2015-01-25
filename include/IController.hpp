@@ -17,7 +17,8 @@ public:
     enum Module
     {
         Home,
-        Game
+        Game,
+        Results
     };
 
     IController(RenderWindow *window, SFMLKernel *kernel, const string &name);

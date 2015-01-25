@@ -25,6 +25,9 @@ void SFMLKernel::loadModule(IController::Module module)
             cout << "Changement vers game" << endl;
             _currentModule = new GameController(_window, this, "Game");
             break;
+        case IController::Results:
+            cout << "Changement vers results" << endl;
+            _currentModule = new ResultsController(_window, this, "Results");
     }
     delete(tmp);
 }

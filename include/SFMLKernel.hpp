@@ -9,6 +9,7 @@
 #include "IController.hpp"
 #include "Home.hpp"
 #include "Game.hpp"
+#include "Results.hpp"
 
 using namespace std;
 using namespace sf;
