@@ -114,6 +114,9 @@ int RankController::eventManager(Event event)
 int RankController::display() {
     // Background
 
+  if (_kernel->_listener->nbHand == 2)
+    _kernel->loadModule(Module::Game);
+  
     Sprite text;
     text.setTexture(_backgroundImg);
     _window->draw(text);
