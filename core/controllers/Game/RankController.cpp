@@ -75,7 +75,6 @@ void RankController::getScore()
             readBuffer = readBuffer.substr(0, readBuffer.size() - 6);
         }
 
-        cout << readBuffer << endl;
         Split(_result, readBuffer, '\n');
     }
 }

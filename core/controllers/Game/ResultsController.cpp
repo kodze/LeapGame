@@ -1,13 +1,14 @@
 #include "../../../include/Results.hpp"
 
 
-ResultsController::ResultsController(RenderWindow *window, SFMLKernel *kernel, const string &name, int score) : IController(window, kernel, name), _score(0)
+ResultsController::ResultsController(RenderWindow *window, SFMLKernel *kernel, const string &name, int score) : IController(window, kernel, name), _score(score)
 {
     if (!_backgroundImg.loadFromFile("res/img_end/gameover.jpg"))
     {
         cerr << "-> " << _name << ": Loading Background Fail" << endl;
     }
     _pseudo = "";
+    _curl = curl_easy_init();
 }
 
 ResultsController::~ResultsController()
@@ -31,7 +32,19 @@ int ResultsController::eventManager(Event event)
     }
     else if (_pseudo.size() == 3)
     {
-        _kernel->loadModule(Module::Rank);
+      CURLcode        res;
+      string  readBuffer;
+      string  formatedAddr;
+
+      _result.clear();
+      // Get response from Get API
+      formatedAddr = "http://77.194.204.33:11080/LeapGameServer/rank.php?request=SET:" + _pseudo + ":" + to_string(_score);
+      curl_easy_setopt(_curl, CURLOPT_URL, formatedAddr.c_str());
+      //curl_easy_setopt(_curl, CURLOPT_WRITEFUNCTION, WriteCallBack);
+      //curl_easy_setopt(_curl, CURLOPT_WRITEDATA, &readBuffer);
+      res = curl_easy_perform(_curl);
+      
+      _kernel->loadModule(Module::Rank);
     }
 }
 
