@@ -23,10 +23,13 @@ GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const s
 {
   this->init();
   loadSprite(4, 4, 128, _explosion, "res/img/explosion.png", _tExplosion);
-  _font.loadFromFile("res/NAKED.ttf");
+  _font.loadFromFile("res/arial.ttf");
+
   _score.setFont(_font);
-  _score.setColor(sf::Color(255, 255, 255));
-  _score.setPosition(800.f, 800.f);
+  _score.setCharacterSize(50);
+  _score.setStyle(sf::Text::Bold);
+  _score.setColor(sf::Color::White);
+  _score.setPosition(Vector2f(250.f, 0.f));
 }
 
 GameController::~GameController()
@@ -110,8 +113,7 @@ void		GameController::RocketFactory()
       RockFixDef.friction = 0.f;
       RockFixDef.shape = &RockShape;
       RockFixDef.userData = &_rock;
-      Rock->CreateFixture(&RockFixDef);
-      
+      Rock->CreateFixture(&RockFixDef);      
     }
 }
 
@@ -141,6 +143,11 @@ int	GameController::display()
 
   std::vector<int>::size_type sz = _contact->_contacts.size();
 
+  if (_pointClock.getElapsedTime().asSeconds() >= 1.f)
+    {
+      _pointClock.restart();
+      _point += 1;
+    }
   if (_swapClock.getElapsedTime().asSeconds() >= 5.f)
     _swap = false;
   if (_modClock.getElapsedTime().asSeconds() >= 5.f)
@@ -155,19 +162,23 @@ int	GameController::display()
 	  ((*A == "boat" && *B == "rock")
 	   || (*A == "rock" && *B == "boat")))
 	{
+	  int	damage;
 	  b2Vec2 vec = _contact->_contacts[i].fixtureA->GetBody()->GetPosition();
 	  // std::cout << "Add Explosion in X: " << vec.x << " Y: " << vec.y << endl;
 	  addExplosion(vec.x * METERTOPIXEL, vec.y * METERTOPIXEL);
 	  if (*B == "rock")
 	    {
-	      _life += _contact->_contacts[i].fixtureA->GetBody()->GetLinearVelocity().x;
+	      damage = _contact->_contacts[i].fixtureA->GetBody()->GetLinearVelocity().x;
 	      _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
 	    }
 	  else if (*A == "rock")
 	    {
-	      _life += _contact->_contacts[i].fixtureB->GetBody()->GetLinearVelocity().x;
+	      damage = _contact->_contacts[i].fixtureB->GetBody()->GetLinearVelocity().x;
 	      _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
 	    }
+	  _life -= abs(damage);
+	  if (_life < 0)
+	    _life = 0;
 	}
       else if (A != NULL && B != NULL  &&
 	       ((*A == "boat" && *B == "green")
@@ -357,20 +368,20 @@ int	GameController::display()
 	  }
     }
 
-    _score.setString(std::to_string(_point));
-    _window->draw(_score);
-
     sf::RectangleShape rectangle(sf::Vector2f(200, 15));
-    rectangle.setPosition(20, HEIGHT - 35.);
+    rectangle.setPosition(20, 24.f);
     _window->draw(rectangle);
     sf::RectangleShape rectangle2(sf::Vector2f(194, 9));
-    rectangle2.setPosition(23, HEIGHT - 32.);
+    rectangle2.setPosition(23, 27.f);
     rectangle2.setFillColor(sf::Color(0, 0, 0));
     _window->draw(rectangle2);
     sf::RectangleShape rectangle3(sf::Vector2f(_life * 194.f / 100.f, 9));
-    rectangle3.setPosition(23, HEIGHT - 32.);
+    rectangle3.setPosition(23, 27.f);
     rectangle3.setFillColor(sf::Color(255 * ((100.f - _life) / 100.f), 255 * (_life / 100.f), 0));
     _window->draw(rectangle3);
+
+    _score.setString(to_string(_point));
+    _window->draw(_score);
 }
 
 Texture&	GameController::LoadImage(const std::string& img, bool b)
@@ -390,27 +401,32 @@ void		GameController::init()
 {
   _window->setFramerateLimit(60);
   
-  _thresholdShader.loadFromFile("data/threshold.glsl", sf::Shader::Fragment);
+  _thresholdShader.loadFromFile("res/img_game/threshold.glsl", sf::Shader::Fragment);
   _thresholdShader.setParameter("resolution", sf::Vector2f(128.0,96.0));
-  _blurh.loadFromFile("data/blurh.glsl", sf::Shader::Fragment);
-  _blurv.loadFromFile("data/blurv.glsl", sf::Shader::Fragment);
+  _blurh.loadFromFile("res/img_game/blurh.glsl", sf::Shader::Fragment);
+  _blurv.loadFromFile("res/img_game/blurv.glsl", sf::Shader::Fragment);
 
-  _background.setTexture(LoadImage("data/background.png"));
+  _background.setTexture(LoadImage("res/img_game/background.png"));
   _background.setOrigin(0,0);
   _background.setPosition(0,0);
-  _background2.setTexture(LoadImage("data/background2.png"));
+  _background2.setTexture(LoadImage("res/img_game/background2.png"));
   _background2.setOrigin(0,0);
   _background2.setPosition(15360.f, 0);
-  _water.setTexture(LoadImage("data/water.png"));
+  _water.setTexture(LoadImage("res/img_game/water.png"));
   _water.setOrigin(8, 8);
-  _box.setTexture(LoadImage("data/boat.png"));
+  _box.setTexture(LoadImage("res/img_game/boat.png"));
   _box.setOrigin(107.5f, 140.5f);
-  _missile.setTexture(LoadImage("data/missile.jpg"));
-  _box_blue.setTexture(LoadImage("data/box_blue.png", true));
-  _box_purple.setTexture(LoadImage("data/box_purple.png", true));
-  _box_red.setTexture(LoadImage("data/box_red.png", true));
-  _box_green.setTexture(LoadImage("data/box_green.png", true));
-
+  _missile.setTexture(LoadImage("res/img_game/missile.png"));
+  _missile.setOrigin(45.f, 14.5f);
+  _box_blue.setTexture(LoadImage("res/img_game/box_blue.png", true));
+  _box_blue.setOrigin(27.5, 27.5);
+  _box_purple.setTexture(LoadImage("res/img_game/box_purple.png", true));
+  _box_purple.setOrigin(27.5, 27.5);
+  _box_red.setTexture(LoadImage("res/img_game/box_red.png", true));
+  _box_red.setOrigin(27.5, 27.5);
+  _box_green.setTexture(LoadImage("res/img_game/box_green.png", true));
+  _box_green.setOrigin(27.5, 27.5);
+  
   _backgroundtext.create(WIDTH, HEIGHT);
   _backgroundtext2.create(WIDTH, HEIGHT);
   _backgroundtext3.create(WIDTH, HEIGHT);

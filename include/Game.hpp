@@ -3,6 +3,7 @@
 
 #include <Box2D/Box2D.h>
 #include <cstdlib>
+#include <complex>
 #include <vector>
 #include "IController.hpp"
 #include "SFMLKernel.hpp"
@@ -59,6 +60,7 @@ private:
   Clock			_deltaClock;
   Clock			_swapClock;
   Clock			_modClock;
+  Clock			_pointClock;
   string		_boat;
   string		_rock;
   string		_blue;
