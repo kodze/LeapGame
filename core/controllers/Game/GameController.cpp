@@ -30,6 +30,17 @@ GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const s
   _score.setStyle(sf::Text::Bold);
   _score.setColor(sf::Color::White);
   _score.setPosition(Vector2f(250.f, -35.f));
+
+  SoundBuffer m;
+  SoundBuffer b;
+  SoundBuffer r;
+  
+  _sRocket.openFromFile("res/rocket.wav");
+  _sRocket.setVolume(500);
+  _sMalus.openFromFile("res/malus.wav");
+  _sMalus.setVolume(500);
+  _sBonus.openFromFile("res/bonus.wav");
+  _sBonus.setVolume(500);
 }
 
 GameController::~GameController()
@@ -163,6 +174,7 @@ int	GameController::display()
 	   || (*A == "rock" && *B == "boat")))
 	{
 	  int	damage;
+	  _sRocket.play();
 	  b2Vec2 vec = _contact->_contacts[i].fixtureA->GetBody()->GetPosition();
 	  // std::cout << "Add Explosion in X: " << vec.x << " Y: " << vec.y << endl;
 	  addExplosion(vec.x * METERTOPIXEL, vec.y * METERTOPIXEL);
@@ -187,6 +199,7 @@ int	GameController::display()
 	       ((*A == "boat" && *B == "green")
 		|| (*A == "green" && *B == "boat")))
 	{
+	  _sBonus.play();
 	  _life += 30;
 	  if (_life > 100)
 	    _life = 100;
@@ -199,6 +212,7 @@ int	GameController::display()
 	       ((*A == "boat" && *B == "blue")
 		|| (*A == "blue" && *B == "boat")))
 	{
+	  _sBonus.play();
 	  _point += 30;
 	  if (*B == "blue")
 	    _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
@@ -209,6 +223,7 @@ int	GameController::display()
 	       ((*A == "boat" && *B == "purple")
 		|| (*A == "purple" && *B == "boat")))
 	{
+	  _sMalus.play();
 	  _swapClock.restart();
 	  _swap = true;
 	  if (*B == "purple")
@@ -220,6 +235,7 @@ int	GameController::display()
 	       ((*A == "boat" && *B == "red")
 		|| (*A == "red" && *B == "boat")))
 	{
+	  _sMalus.play();
 	  _modClock.restart();
 	  _mod = 10;
 	  if (*B == "red")

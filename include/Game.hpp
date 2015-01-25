@@ -75,6 +75,9 @@ private:
   int			_mod;
   Font			_font;
   Text			_score;
+  Music			_sRocket;
+  Music			_sMalus;
+  Music			_sBonus;
 public:
   GameController(RenderWindow *window, SFMLKernel *kernel, const string &name);
   virtual ~GameController();

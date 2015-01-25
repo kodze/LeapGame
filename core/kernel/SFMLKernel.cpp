@@ -7,6 +7,7 @@ SFMLKernel::SFMLKernel(SampleListener *list, Controller *contro)
     _window = new RenderWindow(sf::VideoMode(WIDTH, HEIGHT), GAME_NAME, sf::Style::Fullscreen);
     _currentModule = new HomeController(_window, this, "Home");
     _music.openFromFile("res/music.wav");
+    _music.setVolume(25);
     _music.setLoop(true);
     _music.play();
     cout << "-> SFML initialisation : Done." << endl;
