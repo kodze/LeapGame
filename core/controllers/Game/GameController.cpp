@@ -26,10 +26,10 @@ GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const s
   _font.loadFromFile("res/8-Bit-Madness.ttf");
 
   _score.setFont(_font);
-  _score.setCharacterSize(50);
+  _score.setCharacterSize(85);
   _score.setStyle(sf::Text::Bold);
   _score.setColor(sf::Color::White);
-  _score.setPosition(Vector2f(250.f, 0.f));
+  _score.setPosition(Vector2f(250.f, -35.f));
 }
 
 GameController::~GameController()
@@ -176,12 +176,13 @@ int	GameController::display()
 	      damage = _contact->_contacts[i].fixtureB->GetBody()->GetLinearVelocity().x;
 	      _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
 	    }
-	  _life -= abs(damage);
-	  if (_life < 0) {
-          _life = 0;
-        //_kernel->loadModule(Module::Results);
-      }
-      }
+	  _life -= abs(damage) + 20;
+	  if (_life < 0)
+	    {
+	      _life = 0;
+	      _kernel->loadModule(Module::Results);
+	    }
+	}
       else if (A != NULL && B != NULL  &&
 	       ((*A == "boat" && *B == "green")
 		|| (*A == "green" && *B == "boat")))
