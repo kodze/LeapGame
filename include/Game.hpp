@@ -71,6 +71,8 @@ private:
   int			_point;
   bool			_swap;
   int			_mod;
+  Font			_font;
+  Text			_score;
 public:
   GameController(RenderWindow *window, SFMLKernel *kernel, const string &name);
   virtual ~GameController();

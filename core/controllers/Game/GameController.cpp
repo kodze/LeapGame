@@ -23,6 +23,10 @@ GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const s
 {
   this->init();
   loadSprite(4, 4, 128, _explosion, "res/img/explosion.png", _tExplosion);
+  _font.loadFromFile("res/NAKED.ttf");
+  _score.setFont(_font);
+  _score.setColor(sf::Color(255, 255, 255));
+  _score.setPosition(800.f, 800.f);
 }
 
 GameController::~GameController()
@@ -352,6 +356,10 @@ int	GameController::display()
 	    size = _listExplosions.size();
 	  }
     }
+
+    _score.setString(std::to_string(_point));
+    _window->draw(_score);
+
     sf::RectangleShape rectangle(sf::Vector2f(200, 15));
     rectangle.setPosition(20, HEIGHT - 35.);
     _window->draw(rectangle);
@@ -403,7 +411,6 @@ void		GameController::init()
   _box_red.setTexture(LoadImage("data/box_red.png", true));
   _box_green.setTexture(LoadImage("data/box_green.png", true));
 
-  
   _backgroundtext.create(WIDTH, HEIGHT);
   _backgroundtext2.create(WIDTH, HEIGHT);
   _backgroundtext3.create(WIDTH, HEIGHT);
