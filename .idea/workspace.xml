@@ -12,13 +12,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fd54dca2-855f-416d-a0fe-76ffbac39537" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/include/Results.hpp" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/core/controllers/Game/ResultsController.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/IController.hpp" afterPath="$PROJECT_DIR$/include/IController.hpp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/LeapGame" afterPath="$PROJECT_DIR$/LeapGame" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Makefile" afterPath="$PROJECT_DIR$/Makefile" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/core/kernel/SFMLKernel.cpp" afterPath="$PROJECT_DIR$/core/kernel/SFMLKernel.cpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include/SFMLKernel.hpp" afterPath="$PROJECT_DIR$/include/SFMLKernel.hpp" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="LeapGame.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -61,11 +57,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Makefile" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Makefile" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Makefile">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="12" column="5" selection-start-line="12" selection-start-column="5" selection-end-line="12" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.5544148">
+              <caret line="30" column="38" selection-start-line="30" selection-start-column="38" selection-end-line="30" selection-end-column="38" />
               <folding />
             </state>
           </provider>
@@ -81,11 +77,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SFMLKernel.cpp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SFMLKernel.cpp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/core/kernel/SFMLKernel.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6673511">
-              <caret line="30" column="5" selection-start-line="30" selection-start-column="5" selection-end-line="30" selection-end-column="5" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="15" column="25" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -172,11 +168,11 @@
         <option value="$PROJECT_DIR$/core/controllers/Game/GameController.cpp" />
         <option value="$PROJECT_DIR$/include/Results.hpp" />
         <option value="$PROJECT_DIR$/core/controllers/Game/ResultsController.hpp" />
-        <option value="$PROJECT_DIR$/Makefile" />
         <option value="$PROJECT_DIR$/core/controllers/Game/ResultsController.cpp" />
         <option value="$PROJECT_DIR$/include/IController.hpp" />
         <option value="$PROJECT_DIR$/include/SFMLKernel.hpp" />
         <option value="$PROJECT_DIR$/core/kernel/SFMLKernel.cpp" />
+        <option value="$PROJECT_DIR$/Makefile" />
       </list>
     </option>
   </component>
@@ -821,14 +817,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Makefile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="5" selection-start-line="12" selection-start-column="5" selection-end-line="12" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/core/controllers/Game/GameController.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -873,8 +861,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/core/kernel/SFMLKernel.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6673511">
-          <caret line="30" column="5" selection-start-line="30" selection-start-column="5" selection-end-line="30" selection-end-column="5" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="15" column="25" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5544148">
+          <caret line="30" column="38" selection-start-line="30" selection-start-column="38" selection-end-line="30" selection-end-column="38" />
           <folding />
         </state>
       </provider>
