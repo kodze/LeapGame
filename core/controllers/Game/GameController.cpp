@@ -177,9 +177,11 @@ int	GameController::display()
 	      _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
 	    }
 	  _life -= abs(damage);
-	  if (_life < 0)
-	    _life = 0;
-	}
+	  if (_life < 0) {
+          _life = 0;
+        //_kernel->loadModule(Module::Results);
+      }
+      }
       else if (A != NULL && B != NULL  &&
 	       ((*A == "boat" && *B == "green")
 		|| (*A == "green" && *B == "boat")))

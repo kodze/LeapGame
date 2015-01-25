@@ -2,14 +2,14 @@
 
 SFMLKernel::SFMLKernel(SampleListener *list, Controller *contro)
 {
-  _listener = list;
-  _controller = contro;
-  _window = new RenderWindow(sf::VideoMode(WIDTH, HEIGHT), GAME_NAME, sf::Style::Fullscreen);
-  _currentModule = new HomeController(_window, this, "Home");
-  cout << "-> SFML initialisation : Done." << endl;
-  _music.openFromFile("res/music.wav");
-  _music.setLoop(true);
-  _music.play();
+    _listener = list;
+    _controller = contro;
+    _window = new RenderWindow(sf::VideoMode(WIDTH, HEIGHT), GAME_NAME, sf::Style::Fullscreen);
+    _currentModule = new HomeController(_window, this, "Home");
+    _music.openFromFile("res/music.wav");
+    _music.setLoop(true);
+    _music.play();
+    cout << "-> SFML initialisation : Done." << endl;
 }
 
 void SFMLKernel::loadModule(IController::Module module)
@@ -17,7 +17,6 @@ void SFMLKernel::loadModule(IController::Module module)
     IController *tmp;
 
     tmp = _currentModule;
-    std::cout << "test" << endl;
     switch (module)
     {
         case IController::Home:
