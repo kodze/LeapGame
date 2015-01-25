@@ -22,6 +22,7 @@ SRC		= main.cpp \
 		  core/controllers/Home/HomeController.cpp \
 		  core/controllers/Game/ContactListener.cpp \
 		  core/controllers/Game/ResultsController.cpp \
+		  core/controllers/Game/RankController.cpp \
 		  leap/leap.cpp \
 
 OBJ		= $(SRC:.cpp=.o)

@@ -31,8 +31,12 @@ void SFMLKernel::loadModule(IController::Module module)
         case IController::Results:
             cout << "Changement vers results" << endl;
             _currentModule = new ResultsController(_window, this, "Results");
+            break;
+        case IController::Rank:
+            cout << "Changement vers results" << endl;
+            _currentModule = new RankController(_window, this, "Results");
+        break;
     }
-    delete(tmp);
 }
 
 int SFMLKernel::loop()

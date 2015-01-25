@@ -18,7 +18,8 @@ public:
     {
         Home,
         Game,
-        Results
+        Results,
+        Rank
     };
 
     IController(RenderWindow *window, SFMLKernel *kernel, const string &name);

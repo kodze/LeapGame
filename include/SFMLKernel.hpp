@@ -11,6 +11,7 @@
 #include "Home.hpp"
 #include "Game.hpp"
 #include "Results.hpp"
+#include "rank.hpp"
 
 using namespace std;
 using namespace sf;
