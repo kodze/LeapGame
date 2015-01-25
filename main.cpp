@@ -19,9 +19,10 @@ int main()
     SFMLKernel kernel(&listener, &controller);
    // Have the sample listener receive events from the controller
    controller.enableGesture(Gesture::TYPE_SWIPE);
+   controller.enableGesture(Gesture::TYPE_KEY_TAP);
    controller.addListener(listener);
 
-    srandom(time(NULL));
-    kernel.loop();
+   srandom(time(NULL));
+   kernel.loop();
 
 }

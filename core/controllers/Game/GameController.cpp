@@ -19,7 +19,7 @@ void loadSprite(int height, int width, int cotePx, Sprite *tabDst, string fileNa
 }
 
 
-GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : IController(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat"), _rock("rock"), _life(100) , _blue("blue") , _purple("purple") , _red("red") , _green("green"), _point(0), _swap(false), _mod(40)
+GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : IController(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat"), _rock("rock"), _life(100) , _blue("blue") , _purple("purple") , _red("red") , _green("green"), _point(0), _swap(false), _mod(40), _boatRock("boatrock")
 {
   this->init();
   loadSprite(4, 4, 128, _explosion, "res/img_game/explosion.png", _tExplosion);
@@ -45,7 +45,6 @@ GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const s
 
 GameController::~GameController()
 {
-
 }
 
 int GameController::eventManager(Event event)
@@ -128,6 +127,29 @@ void		GameController::RocketFactory()
     }
 }
 
+void	GameController::popRocket()
+{
+  b2BodyDef	RockDef;
+  b2Vec2	move(35, 0);
+  RockDef.linearVelocity = move;
+  RockDef.bullet = true;
+  b2Vec2	pos(_player->GetPosition());
+  pos.x += 1;
+  RockDef.position = pos;
+  RockDef.type = b2_kinematicBody;
+  RockDef.fixedRotation = true;
+  RockDef.userData = &_boatRock;
+  b2Body* Rock = _world.CreateBody(&RockDef);
+  b2PolygonShape RockShape;
+  RockShape.SetAsBox(30/METERTOPIXEL, 5/METERTOPIXEL);
+  b2FixtureDef RockFixDef;
+  RockFixDef.density = 0.f;
+  RockFixDef.friction = 0.f;
+  RockFixDef.shape = &RockShape;
+  RockFixDef.userData = &_boatRock;
+  Rock->CreateFixture(&RockFixDef);
+}
+
 int	GameController::display()
 {
 
@@ -196,6 +218,16 @@ int	GameController::display()
 	    }
 	}
       else if (A != NULL && B != NULL  &&
+	       ((*A == "boatrock" && *B == "rock")
+		|| (*A == "rock" && *B == "boatrock")))
+	{
+	  _sRocket.play();
+	  b2Vec2 vec = _contact->_contacts[i].fixtureA->GetBody()->GetPosition();
+	  addExplosion(vec.x * METERTOPIXEL, vec.y * METERTOPIXEL);
+	  _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
+	  _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
+	}
+      else if (A != NULL && B != NULL  &&
 	       ((*A == "boat" && *B == "green")
 		|| (*A == "green" && *B == "boat")))
 	{
@@ -256,6 +288,12 @@ int	GameController::display()
       _kernel->_listener->swipe_b = 0;
     }
 
+  if (_kernel->_listener->click)
+    {
+      //popRocket();
+      _kernel->_listener->click = false;
+    }
+    
   for(int x = 0; x < _particleSystem->GetParticleCount();++x)
     {
       b2Vec2 pos = _particleSystem->GetPositionBuffer()[x];
@@ -321,6 +359,14 @@ int	GameController::display()
 	  else if (*((string *)(BodyIterator->GetUserData())) == string("rock"))
 	    {
 	      Sprite	rock(_missile);
+
+	      rock.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x),
+			       METERTOPIXEL * (BodyIterator->GetPosition().y));
+	      _window->draw(rock);
+	    }
+	  else if (*((string *)(BodyIterator->GetUserData())) == string("boatrock"))
+	    {
+	      Sprite	rock(_boatRocket);
 
 	      rock.setPosition(METERTOPIXEL * (BodyIterator->GetPosition().x),
 			       METERTOPIXEL * (BodyIterator->GetPosition().y));
@@ -445,6 +491,8 @@ void		GameController::init()
   _box_red.setOrigin(27.5, 27.5);
   _box_green.setTexture(LoadImage("res/img_game/box_green.png", true));
   _box_green.setOrigin(27.5, 27.5);
+  _boatRocket.setTexture(LoadImage("res/img_game/rocket.png"));
+  _boatRocket.setOrigin(40.5, 11);
   
   _backgroundtext.create(WIDTH, HEIGHT);
   _backgroundtext2.create(WIDTH, HEIGHT);

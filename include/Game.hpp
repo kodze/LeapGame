@@ -38,6 +38,7 @@ private:
   Sprite		_water;
   Sprite		_box;
   Sprite		_missile;
+  Sprite		_boatRocket;
   Sprite		_box_blue;
   Sprite		_box_purple;
   Sprite		_box_red;
@@ -57,11 +58,13 @@ private:
   RenderTexture		_backgroundtext3;
 
   Texture&		LoadImage(const std::string&, bool=false);
+  void			popRocket();
   Clock			_deltaClock;
   Clock			_swapClock;
   Clock			_modClock;
   Clock			_pointClock;
   string		_boat;
+  string		_boatRock;
   string		_rock;
   string		_blue;
   string		_purple;
@@ -86,6 +89,10 @@ public:
   void addExplosion(double x, double y);
   int display();
   void init();
+  int	getPoint() const
+  {
+    return (_point);
+  }
 };
 
 #endif

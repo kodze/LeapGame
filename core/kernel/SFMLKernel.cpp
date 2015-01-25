@@ -27,10 +27,11 @@ void SFMLKernel::loadModule(IController::Module module)
         case IController::Game:
             cout << "Changement vers game" << endl;
             _currentModule = new GameController(_window, this, "Game");
-            break;
+	    break;
         case IController::Results:
             cout << "Changement vers results" << endl;
-            _currentModule = new ResultsController(_window, this, "Results");
+	    
+	    _currentModule = new ResultsController(_window, this, "Results", ((GameController *)_currentModule)->getPoint());
             break;
         case IController::Rank:
             cout << "Changement vers results" << endl;

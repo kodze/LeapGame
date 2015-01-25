@@ -27,6 +27,10 @@ int HomeController::eventManager(Event event)
 
 int HomeController::display()
 {
+
+  if (_kernel->_listener->nbHand == 2)
+    _kernel->loadModule(IController::Game);
+
   if (_isFirst)
     _window->draw(_background);
   else
@@ -36,6 +40,4 @@ int HomeController::display()
       _isFirst = !_isFirst;
       _swapClock.restart();
     }
-  if (_kernel->_listener->nbHand == 2)
-    _kernel->loadModule(IController::Game);
 }

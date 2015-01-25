@@ -9,23 +9,24 @@ using namespace Leap;
 
 class SampleListener : public Leap::Listener {
 public:
-    virtual void onInit(const Controller&);
-    virtual void onConnect(const Controller&);
-    virtual void onDisconnect(const Controller&);
-    virtual void onExit(const Controller&);
-    virtual void onFrame(const Controller&);
-    virtual void onFocusGained(const Controller&);
-    virtual void onFocusLost(const Controller&);
-    virtual void onDeviceChange(const Controller&);
-    virtual void onServiceConnect(const Controller&);
-    virtual void onServiceDisconnect(const Controller&);
+  virtual void onInit(const Controller&);
+  virtual void onConnect(const Controller&);
+  virtual void onDisconnect(const Controller&);
+  virtual void onExit(const Controller&);
+  virtual void onFrame(const Controller&);
+  virtual void onFocusGained(const Controller&);
+  virtual void onFocusLost(const Controller&);
+  virtual void onDeviceChange(const Controller&);
+  virtual void onServiceConnect(const Controller&);
+  virtual void onServiceDisconnect(const Controller&);
 
-    int		nbHand;
-    double	hand[3];
-    double	vector_h[3];
-    double	gest_duration;
-    double	speed;
-    bool	swipe_b;
+  int		nbHand;
+  double	hand[3];
+  double	vector_h[3];
+  double	gest_duration;
+  double	speed;
+  bool		swipe_b;
+  bool		click;
 private:
 };
 
