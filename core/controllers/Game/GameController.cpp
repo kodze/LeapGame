@@ -19,7 +19,7 @@ void loadSprite(int height, int width, int cotePx, Sprite *tabDst, string fileNa
 }
 
 
-GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : IController(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat"), _rock("rock"), _life(100) , _blue("blue") , _purple("purple") , _red("red") , _green("green")
+GameController::GameController(RenderWindow *window, SFMLKernel *kernel, const string &name) : IController(window, kernel, name), _gravity(0.0f, 30.f) ,_world(_gravity), _boat("boat"), _rock("rock"), _life(100) , _blue("blue") , _purple("purple") , _red("red") , _green("green"), _point(0), _swap(false), _mod(40)
 {
   this->init();
   loadSprite(4, 4, 128, _explosion, "res/img/explosion.png", _tExplosion);
@@ -90,7 +90,7 @@ void		GameController::BonusFactory()
 
 void		GameController::RocketFactory()
 {
-  if (random() % 30 == 22)
+  if (random() % _mod == 2)
     {
       b2BodyDef	RockDef;
       b2Vec2	move((random() % 25 + 8) * -1, 0);
@@ -130,15 +130,20 @@ int	GameController::display()
 
   _background.move(-6.f, 0);
   _background2.move(-6.f, 0);
-  if (_background.getPosition().x <= -1920.f)
-    _background.setPosition(1920.f, 0);
-  if (_background2.getPosition().x <= -1920.f)
-    _background2.setPosition(1920.f, 0);
+  if (_background.getPosition().x <= -15360.f)
+    _background.setPosition(15360.f, 0);
+  if (_background2.getPosition().x <= -15360.f)
+    _background2.setPosition(15360.f, 0);
   _window->draw(_background);
   _window->draw(_background2);
 
   std::vector<int>::size_type sz = _contact->_contacts.size();
 
+  if (_swapClock.getElapsedTime().asSeconds() >= 5.f)
+    _swap = false;
+  if (_modClock.getElapsedTime().asSeconds() >= 5.f)
+    _mod = 40;
+  
   for (unsigned int i = 0; i < sz; i++)
     {
       string	*A = (string *)(_contact->_contacts[i].fixtureA->GetUserData());
@@ -148,9 +153,9 @@ int	GameController::display()
 	  ((*A == "boat" && *B == "rock")
 	   || (*A == "rock" && *B == "boat")))
 	{
-        b2Vec2 vec = _contact->_contacts[i].fixtureA->GetBody()->GetPosition();
-	// std::cout << "Add Explosion in X: " << vec.x << " Y: " << vec.y << endl;
-        addExplosion(vec.x * METERTOPIXEL, vec.y * METERTOPIXEL);
+	  b2Vec2 vec = _contact->_contacts[i].fixtureA->GetBody()->GetPosition();
+	  // std::cout << "Add Explosion in X: " << vec.x << " Y: " << vec.y << endl;
+	  addExplosion(vec.x * METERTOPIXEL, vec.y * METERTOPIXEL);
 	  if (*B == "rock")
 	    {
 	      _life += _contact->_contacts[i].fixtureA->GetBody()->GetLinearVelocity().x;
@@ -161,6 +166,50 @@ int	GameController::display()
 	      _life += _contact->_contacts[i].fixtureB->GetBody()->GetLinearVelocity().x;
 	      _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
 	    }
+	}
+      else if (A != NULL && B != NULL  &&
+	       ((*A == "boat" && *B == "green")
+		|| (*A == "green" && *B == "boat")))
+	{
+	  _life += 30;
+	  if (_life > 100)
+	    _life = 100;
+	  if (*B == "green")
+	    _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
+	  else if (*A == "green")
+	    _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
+	}
+      else if (A != NULL && B != NULL  &&
+	       ((*A == "boat" && *B == "blue")
+		|| (*A == "blue" && *B == "boat")))
+	{
+	  _point += 30;
+	  if (*B == "blue")
+	    _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
+	  else if (*A == "blue")
+	    _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
+	}
+      else if (A != NULL && B != NULL  &&
+	       ((*A == "boat" && *B == "purple")
+		|| (*A == "purple" && *B == "boat")))
+	{
+	  _swapClock.restart();
+	  _swap = true;
+	  if (*B == "purple")
+	    _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
+	  else if (*A == "purple")
+	    _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
+	}
+      else if (A != NULL && B != NULL  &&
+	       ((*A == "boat" && *B == "red")
+		|| (*A == "red" && *B == "boat")))
+	{
+	  _modClock.restart();
+	  _mod = 10;
+	  if (*B == "red")
+	    _world.DestroyBody(_contact->_contacts[i].fixtureB->GetBody());
+	  else if (*A == "red")
+	    _world.DestroyBody(_contact->_contacts[i].fixtureA->GetBody());
 	}
     }
 
@@ -203,9 +252,14 @@ int	GameController::display()
 	  if (*((string *)(BodyIterator->GetUserData())) == string("boat"))
 	    {
 	      Sprite	box(_box);
-
+	      double	hand_tmp;
+	      
 	      b2Vec2 force2 = _player->GetLinearVelocity();
-	      force2.x += _kernel->_listener->hand[0] / 80.f;
+
+	      hand_tmp = _kernel->_listener->hand[0];
+	      if (_swap == true)
+		hand_tmp *= -1.f;
+	      force2.x += hand_tmp / 80.f;
 	      _player->SetLinearVelocity(force2);
 	      if ((BodyIterator->GetPosition().y * METERTOPIXEL) < HEIGHT / 2)
 	      	{
@@ -335,12 +389,12 @@ void		GameController::init()
   _blurh.loadFromFile("data/blurh.glsl", sf::Shader::Fragment);
   _blurv.loadFromFile("data/blurv.glsl", sf::Shader::Fragment);
 
-  _background.setTexture(LoadImage("data/background.jpg"));
+  _background.setTexture(LoadImage("data/background.png"));
   _background.setOrigin(0,0);
   _background.setPosition(0,0);
-  _background2.setTexture(LoadImage("data/background.jpg"));
+  _background2.setTexture(LoadImage("data/background2.png"));
   _background2.setOrigin(0,0);
-  _background2.setPosition(1920.f, 0);
+  _background2.setPosition(15360.f, 0);
   _water.setTexture(LoadImage("data/water.png"));
   _water.setOrigin(8, 8);
   _box.setTexture(LoadImage("data/boat.png"));

@@ -57,6 +57,8 @@ private:
 
   Texture&		LoadImage(const std::string&, bool=false);
   Clock			_deltaClock;
+  Clock			_swapClock;
+  Clock			_modClock;
   string		_boat;
   string		_rock;
   string		_blue;
@@ -66,6 +68,9 @@ private:
   void			RocketFactory();
   void			BonusFactory();
   int			_life;
+  int			_point;
+  bool			_swap;
+  int			_mod;
 public:
   GameController(RenderWindow *window, SFMLKernel *kernel, const string &name);
   virtual ~GameController();
